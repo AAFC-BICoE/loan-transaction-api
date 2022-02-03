@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  loan-transaction-db:
+    image: postgres:12-alpine
+    env_file:
+      - ${BASE_PATH_TO_LOAN_TRANSACTION:-.}/pg.env
+    volumes:
+      - ${BASE_PATH_TO_LOAN_TRANSACTION:-.}/src/test/resources/init-transaction-module.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
+
+  loan-transaction-api:
+    image: aafcbicoe/loan-transaction-api:dev
+    # build: ${BASE_PATH_TO_LOAN_TRANSACTION:-.}
+    ports:
+      - "8086:8080"
+    env_file:
+      - ${BASE_PATH_TO_LOAN_TRANSACTION:-.}/loan-transaction.env
+    networks:
+      default:
