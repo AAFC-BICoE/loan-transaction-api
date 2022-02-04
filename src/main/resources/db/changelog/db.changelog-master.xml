@@ -3,4 +3,5 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog db/changelog/xsd/dbchangelog-4.4.xsd">
   <include file="db/changelog/db.changelog-init.xml"/>
+  <include file="db/changelog/migrations/1-Add_Shipment_to_Transaction.xml"/>
 </databaseChangeLog>
