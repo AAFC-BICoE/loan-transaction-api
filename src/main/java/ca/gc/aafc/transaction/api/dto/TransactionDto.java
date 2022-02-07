@@ -2,6 +2,7 @@ package ca.gc.aafc.transaction.api.dto;
 
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
+import ca.gc.aafc.transaction.api.entities.Shipment;
 import ca.gc.aafc.transaction.api.entities.Transaction;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
@@ -50,6 +51,8 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   private LocalDate dueDate;
 
   private String remarks;
+
+  private Shipment shipment;
 
   private String createdBy;
   private OffsetDateTime createdOn;

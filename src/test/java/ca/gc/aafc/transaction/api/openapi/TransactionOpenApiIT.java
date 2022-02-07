@@ -8,6 +8,7 @@ import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
 import ca.gc.aafc.transaction.api.entities.Transaction;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
@@ -51,7 +52,9 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
 
     ValidatableResponse response = sendPost("",
         JsonAPITestHelper.toJsonAPIMap(TransactionDto.TYPENAME,
-            TransactionFixture.newTransaction().build()));
+            TransactionFixture.newTransaction()
+                .shipment(ShipmentTestFixture.newShipment().build())
+                .build()));
 
     response
       .body("data.id", Matchers.notNullValue());

@@ -3,6 +3,7 @@ package ca.gc.aafc.transaction.api.repository;
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
 import io.crnk.core.queryspec.QuerySpec;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +25,10 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
   @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":staff")
   @Test
   public void create_onValidData_transactionPersisted() {
-    TransactionDto transactionDto = TransactionFixture.newTransaction().build();
+    TransactionDto transactionDto = TransactionFixture
+        .newTransaction()
+        .shipment(ShipmentTestFixture.newShipment().build())
+        .build();
 
     TransactionDto createdTransaction = transactionRepository.create(transactionDto);
     assertNotNull(createdTransaction.getCreatedOn());
@@ -32,6 +36,7 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto result = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
     assertEquals(createdTransaction.getUuid(), result.getUuid());
     assertEquals("user", result.getCreatedBy());
+    assertEquals(ShipmentTestFixture.CURRENCY, result.getShipment().getCurrency());
 
     // cleanup
     transactionRepository.delete(createdTransaction.getUuid());
