@@ -4,6 +4,7 @@ import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -41,6 +43,7 @@ import java.util.UUID;
 @ToString
 @Builder
 @NaturalIdCache
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @TypeDef(name = "list-array", typeClass = ListArrayType.class)
 public class Transaction implements DinaEntity {
@@ -83,7 +86,6 @@ public class Transaction implements DinaEntity {
   @Size(max = 1000)
   private String purpose;
 
-
   @PastOrPresent
   private LocalDate openedDate;
   @PastOrPresent
@@ -93,6 +95,10 @@ public class Transaction implements DinaEntity {
 
   @Size(max = 1000)
   private String remarks;
+
+  @Type(type = "jsonb")
+  @Valid
+  private Shipment shipment;
 
   @Column(name = "created_by")
   private String createdBy;
