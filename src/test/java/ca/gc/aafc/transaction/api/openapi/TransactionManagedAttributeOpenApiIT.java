@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -17,6 +18,7 @@ import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.TransactionTestingHelper;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
+import ca.gc.aafc.transaction.api.TransactionModuleApiLauncher;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
 import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttributeFixture;
@@ -24,22 +26,24 @@ import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttribu
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
 
-@TestPropertySource(properties = {
-  "spring.config.additional-location=classpath:application-test.yml",
-  "dev-user.enabled=true"})
+@SpringBootTest(
+  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+  classes = TransactionModuleApiLauncher.class
+)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 @ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
 public class TransactionManagedAttributeOpenApiIT extends BaseRestAssuredTest {
 
-  public static final String API_BASE_PATH = "/api/v1/transaction/";
+  public static final String API_BASE_PATH = "/api/v1/managed-attribute/";
   private static final String SCHEMA_NAME = "ManagedAttribute";
+
+  private static URL specUrl;
 
   @Inject
   private DatabaseSupportService databaseSupportService;
 
   @Inject
   private TransactionTestingHelper transactionTestingHelper;
-
-  private static URL specUrl;
 
   @SneakyThrows({MalformedURLException.class, URISyntaxException.class})
   protected TransactionManagedAttributeOpenApiIT() {
@@ -49,7 +53,9 @@ public class TransactionManagedAttributeOpenApiIT extends BaseRestAssuredTest {
   }
 
   @Test
-  public void post_NewTransaction_ReturnsOkayAndBody() {
+  @SneakyThrows
+  void managedAttribute_SpecValid() {
+    // Create a new transaction managed attribute.
     ValidatableResponse response = sendPost(
       "",
       JsonAPITestHelper.toJsonAPIMap(
@@ -58,13 +64,15 @@ public class TransactionManagedAttributeOpenApiIT extends BaseRestAssuredTest {
       )
     );
 
+    // Ensure the id was created.
     response.body("data.id", Matchers.notNullValue());
+
+    // Validate the specifications.
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
     transactionTestingHelper.doInTransactionWithoutResult(
-        operation -> databaseSupportService.deleteByProperty(TransactionManagedAttribute.class, "uuid", uuid));
+        transaction -> databaseSupportService.deleteByProperty(TransactionManagedAttribute.class, "uuid", uuid));
   }
-
 }

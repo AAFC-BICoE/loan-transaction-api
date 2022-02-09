@@ -15,13 +15,19 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @RelatedEntity(TransactionManagedAttribute.class)
-@Data
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonApiResource(type = TransactionManagedAttributeDto.TYPENAME) 
 public class TransactionManagedAttributeDto {
 

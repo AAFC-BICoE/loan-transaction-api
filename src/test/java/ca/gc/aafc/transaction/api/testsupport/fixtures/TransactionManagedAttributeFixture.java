@@ -16,6 +16,7 @@ public final class TransactionManagedAttributeFixture {
         .name(RandomStringUtils.randomAlphabetic(5))
         .managedAttributeType(ManagedAttributeType.INTEGER)
         .createdBy("Created By")
+        .acceptedValues(new String[] {})
         .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build());
   }
 }
