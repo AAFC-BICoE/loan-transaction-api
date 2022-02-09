@@ -16,7 +16,7 @@ import lombok.NonNull;
 @Service
 public class TransactionManagedAttributeService extends ManagedAttributeService<TransactionManagedAttribute> {
 
-  public static final String METADATA_TABLE_NAME = "metadata";
+  public static final String TABLE_NAME = "transaction";
   public static final String MANAGED_ATTRIBUTES_COL_NAME = "managed_attribute_values";
 
   private final TransactionManagedAttributeValidator managedAttributeValidator;
@@ -51,7 +51,7 @@ public class TransactionManagedAttributeService extends ManagedAttributeService<
 
   private void checkKeysFor(String key) {
     Integer countFirstLevelKeys = jsonbService.countFirstLevelKeys(
-      TransactionManagedAttributeService.METADATA_TABLE_NAME, TransactionManagedAttributeService.MANAGED_ATTRIBUTES_COL_NAME, key);
+      TransactionManagedAttributeService.TABLE_NAME, TransactionManagedAttributeService.MANAGED_ATTRIBUTES_COL_NAME, key);
     if (countFirstLevelKeys > 0) {
       throw new IllegalStateException("Managed attribute key: " + key + ", is currently in use.");
     }

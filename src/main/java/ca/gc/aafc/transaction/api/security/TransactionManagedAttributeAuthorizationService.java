@@ -1,4 +1,4 @@
-package ca.gc.aafc.transaction.api.service;
+package ca.gc.aafc.transaction.api.security;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;

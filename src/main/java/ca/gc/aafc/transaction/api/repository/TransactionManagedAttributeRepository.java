@@ -14,8 +14,7 @@ import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.service.DinaService;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
 import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
-import ca.gc.aafc.transaction.api.service.TransactionManagedAttributeAuthorizationService;
-
+import ca.gc.aafc.transaction.api.security.TransactionManagedAttributeAuthorizationService;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
@@ -26,12 +25,12 @@ import lombok.NonNull;
 public class TransactionManagedAttributeRepository
   extends DinaRepository<TransactionManagedAttributeDto, TransactionManagedAttribute> {
 
-  private final Optional<DinaAuthenticatedUser> authenticatedUser;
+  private final Optional<DinaAuthenticatedUser> dinaAuthenticatedUser;
 
   public TransactionManagedAttributeRepository(
     @NonNull DinaService<TransactionManagedAttribute> dinaService,
     @NonNull TransactionManagedAttributeAuthorizationService authorizationService,
-    Optional<DinaAuthenticatedUser> authenticatedUser,
+    Optional<DinaAuthenticatedUser> dinaAuthenticatedUser,
     @NonNull BuildProperties props
   ) {
     super(
@@ -42,12 +41,12 @@ public class TransactionManagedAttributeRepository
       TransactionManagedAttributeDto.class,
       TransactionManagedAttribute.class, null, null,
       props);
-    this.authenticatedUser = authenticatedUser;
+    this.dinaAuthenticatedUser = dinaAuthenticatedUser;
   }
 
   @Override
   public <S extends TransactionManagedAttributeDto> S create(S resource) {
-    authenticatedUser.ifPresent(user -> resource.setCreatedBy(user.getUsername()));
+    dinaAuthenticatedUser.ifPresent(user -> resource.setCreatedBy(user.getUsername()));
     return super.create(resource);
   }
 
