@@ -62,12 +62,13 @@ public class TransactionManagedAttributeRepositoryCRUDIT extends BaseIntegration
 
   @Test
   public void create_WithAuthenticatedUser_SetsCreatedBy() {
-    TransactionManagedAttributeDto ma = new TransactionManagedAttributeDto();
-    ma.setUuid(UUID.randomUUID());
-    ma.setName("name");
-    ma.setManagedAttributeType(ManagedAttributeType.STRING);
-    ma.setAcceptedValues(new String[] { "dosal" });
-    ma.setMultilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build());
+    TransactionManagedAttributeDto ma = TransactionManagedAttributeDto.builder()
+      .uuid(UUID.randomUUID())
+      .name("name")
+      .managedAttributeType(ManagedAttributeType.STRING)
+      .acceptedValues(new String[] { "dosal" })
+      .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
+      .build();
 
     TransactionManagedAttributeDto result = managedResourceRepository.findOne(
       managedResourceRepository.create(ma).getUuid(),
@@ -77,13 +78,12 @@ public class TransactionManagedAttributeRepositoryCRUDIT extends BaseIntegration
 
   @Test
   void findOneByKey_whenKeyProvided_managedAttributeFetched() {
-    TransactionManagedAttributeDto newAttribute = new TransactionManagedAttributeDto();
-    newAttribute.setName("Object Store Attribute 1");
-    newAttribute.setManagedAttributeType(ManagedAttributeType.INTEGER);
-    newAttribute.setCreatedBy("poffm");
-    newAttribute.setMultilingualDescription(
-      MultilingualDescriptionFactory.newMultilingualDescription().build()
-      );
+    TransactionManagedAttributeDto newAttribute = TransactionManagedAttributeDto.builder()
+      .name("Object Store Attribute 1")
+      .managedAttributeType(ManagedAttributeType.INTEGER)
+      .createdBy("poffm")
+      .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
+      .build();
 
     UUID newAttributeUuid = managedResourceRepository.create(newAttribute).getUuid();
 

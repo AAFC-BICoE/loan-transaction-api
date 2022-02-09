@@ -10,7 +10,8 @@
     <sql>
         CREATE TYPE managed_attribute_type AS ENUM (
             'INTEGER',
-            'STRING'
+            'STRING',
+            'DATE'
         );
     </sql>
 
@@ -41,7 +42,7 @@
 
     <!-- Add managed attribute values to the transaction table. -->
     <addColumn tableName="transaction">
-        <column name="managed_attribute_values" type="jsonb" defaultValue="{}" />
+        <column name="managed_attributes" type="jsonb" defaultValue="{}" />
     </addColumn>
   </changeSet>
 

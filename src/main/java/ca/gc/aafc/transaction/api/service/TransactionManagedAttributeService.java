@@ -17,7 +17,7 @@ import lombok.NonNull;
 public class TransactionManagedAttributeService extends ManagedAttributeService<TransactionManagedAttribute> {
 
   public static final String TABLE_NAME = "transaction";
-  public static final String MANAGED_ATTRIBUTES_COL_NAME = "managed_attribute_values";
+  public static final String MANAGED_ATTRIBUTES_COL_NAME = "managed_attributes";
 
   private final TransactionManagedAttributeValidator managedAttributeValidator;
   private final PostgresJsonbService jsonbService;
