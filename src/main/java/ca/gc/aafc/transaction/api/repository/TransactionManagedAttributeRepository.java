@@ -26,12 +26,12 @@ import lombok.NonNull;
 public class TransactionManagedAttributeRepository
   extends DinaRepository<TransactionManagedAttributeDto, TransactionManagedAttribute> {
 
-  private final Optional<DinaAuthenticatedUser> authenticatedUser;
+  private final Optional<DinaAuthenticatedUser> dinaAuthenticatedUser;
 
   public TransactionManagedAttributeRepository(
     @NonNull DinaService<TransactionManagedAttribute> dinaService,
     @NonNull TransactionManagedAttributeAuthorizationService authorizationService,
-    Optional<DinaAuthenticatedUser> authenticatedUser,
+    Optional<DinaAuthenticatedUser> dinaAuthenticatedUser,
     @NonNull BuildProperties props
   ) {
     super(
@@ -44,12 +44,12 @@ public class TransactionManagedAttributeRepository
       null, 
       null,
       props);
-    this.authenticatedUser = authenticatedUser;
+    this.dinaAuthenticatedUser = dinaAuthenticatedUser;
   }
 
   @Override
   public <S extends TransactionManagedAttributeDto> S create(S resource) {
-    authenticatedUser.ifPresent(user -> resource.setCreatedBy(user.getUsername()));
+    dinaAuthenticatedUser.ifPresent(user -> resource.setCreatedBy(user.getUsername()));
     return super.create(resource);
   }
 

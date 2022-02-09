@@ -60,7 +60,7 @@ public class TransactionDto extends AttributeMetaInfoProvider {
 
   @JsonApiField(patchStrategy = PatchStrategy.SET)
   @Builder.Default
-  private Map<String, String> managedAttributeValues = new HashMap<>();
+  private Map<String, String> managedAttributes = new HashMap<>();
 
   private String createdBy;
   private OffsetDateTime createdOn;

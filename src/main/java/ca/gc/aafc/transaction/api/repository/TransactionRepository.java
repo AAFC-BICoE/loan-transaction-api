@@ -17,12 +17,12 @@ import java.util.Optional;
 @Repository
 public class TransactionRepository extends DinaRepository<TransactionDto, Transaction> {
 
-  private Optional<DinaAuthenticatedUser> authenticatedUser;
+  private Optional<DinaAuthenticatedUser> dinaAuthenticatedUser;
 
   public TransactionRepository(
     @NonNull DinaService<Transaction> dinaService,
     @NonNull GroupAuthorizationService authorizationService,
-    Optional<DinaAuthenticatedUser> authenticatedUser,
+    Optional<DinaAuthenticatedUser> dinaAuthenticatedUser,
     @NonNull BuildProperties props,
     @NonNull AuditService auditService
   ) {
@@ -36,13 +36,13 @@ public class TransactionRepository extends DinaRepository<TransactionDto, Transa
       null,
       null,
       props);
-    this.authenticatedUser = authenticatedUser;
+    this.dinaAuthenticatedUser = dinaAuthenticatedUser;
   }
 
   @Override
   public <S extends TransactionDto> S create(S resource) {
-    if (authenticatedUser.isPresent()) {
-      resource.setCreatedBy(authenticatedUser.get().getUsername());
+    if (dinaAuthenticatedUser.isPresent()) {
+      resource.setCreatedBy(dinaAuthenticatedUser.get().getUsername());
     }
     return super.create(resource);
   }

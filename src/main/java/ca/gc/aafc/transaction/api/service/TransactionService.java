@@ -34,7 +34,7 @@ public class TransactionService extends DefaultDinaService<Transaction> {
 
   @Override
   public void validateBusinessRules(Transaction entity) {
-    transactionManagedAttributeValueValidator.validate(entity, entity.getManagedAttributeValues());
+    transactionManagedAttributeValueValidator.validate(entity, entity.getManagedAttributes());
   }
 
 }

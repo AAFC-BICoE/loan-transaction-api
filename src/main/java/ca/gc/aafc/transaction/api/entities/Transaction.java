@@ -105,7 +105,7 @@ public class Transaction implements DinaEntity {
   @Type(type = "jsonb")
   @NotNull
   @Builder.Default
-  private Map<String, String> managedAttributeValues = new HashMap<>();
+  private Map<String, String> managedAttributes = new HashMap<>();
 
   @Column(name = "created_by")
   private String createdBy;
