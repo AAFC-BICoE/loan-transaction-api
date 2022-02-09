@@ -32,7 +32,9 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -99,6 +101,11 @@ public class Transaction implements DinaEntity {
   @Type(type = "jsonb")
   @Valid
   private Shipment shipment;
+
+  @Type(type = "jsonb")
+  @NotNull
+  @Builder.Default
+  private Map<String, String> managedAttributeValues = new HashMap<>();
 
   @Column(name = "created_by")
   private String createdBy;

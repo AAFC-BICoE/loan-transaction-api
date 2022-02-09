@@ -2,6 +2,7 @@ package ca.gc.aafc.transaction.api;
 
 import java.util.Properties;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import ca.gc.aafc.transaction.api.service.TransactionManagedAttributeService;
 @SpringBootTest(classes = {TransactionModuleApiLauncher.class, BaseIntegrationTest.TestConfig.class})
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 @ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
+@Transactional
 public class BaseIntegrationTest {
 
   @Inject
