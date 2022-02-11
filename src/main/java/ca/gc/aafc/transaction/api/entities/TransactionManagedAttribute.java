@@ -28,7 +28,6 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import ca.gc.aafc.dina.entity.ManagedAttribute;
 import ca.gc.aafc.dina.i18n.MultilingualDescription;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +41,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @RequiredArgsConstructor
-@SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @NaturalIdCache
 public class TransactionManagedAttribute implements ManagedAttribute {
   private Integer id;
