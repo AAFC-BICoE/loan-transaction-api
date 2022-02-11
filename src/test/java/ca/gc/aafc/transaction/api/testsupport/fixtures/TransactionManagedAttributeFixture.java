@@ -14,6 +14,7 @@ public final class TransactionManagedAttributeFixture {
   public static TransactionManagedAttributeDto.TransactionManagedAttributeDtoBuilder newTransactionManagedAttribute() {
     return TransactionManagedAttributeDto.builder()
         .name(RandomStringUtils.randomAlphabetic(5))
+        .group("group")
         .managedAttributeType(ManagedAttributeType.INTEGER)
         .createdBy("Created By")
         .acceptedValues(new String[] {})

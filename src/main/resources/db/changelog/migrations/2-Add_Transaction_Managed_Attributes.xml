@@ -23,6 +23,9 @@
         <column name="uuid" type="uuid">
             <constraints nullable="false" unique="true"/>
         </column>
+        <column name="_group" type="VARCHAR(50)">
+          <constraints nullable="false"/>
+        </column>
         <column name="type" type="managed_attribute_type">
             <constraints nullable="false"/>
         </column>

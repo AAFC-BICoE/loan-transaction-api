@@ -3,50 +3,47 @@ package ca.gc.aafc.transaction.api.repository;
 import java.util.UUID;
 import javax.inject.Inject;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
 
 import ca.gc.aafc.dina.entity.ManagedAttribute.ManagedAttributeType;
+import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
-import ca.gc.aafc.transaction.api.DinaAuthenticatedUserConfig;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
 import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
 import ca.gc.aafc.transaction.api.testsupport.factories.MultilingualDescriptionFactory;
 import ca.gc.aafc.transaction.api.testsupport.factories.TransactionManagedAttributeFactory;
 
 import io.crnk.core.queryspec.QuerySpec;
+import lombok.SneakyThrows;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TransactionManagedAttributeRepositoryCRUDIT extends BaseIntegrationTest {
+@SpringBootTest(properties = "keycloak.enabled=true")
+public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest {
   
   @Inject
   private TransactionManagedAttributeRepository managedResourceRepository;
-  
-  private TransactionManagedAttribute testManagedAttribute;
 
-  private static final String DINA_USER_NAME = DinaAuthenticatedUserConfig.USER_NAME;
+  private static final String VALID_GROUP = "validGroup";
+  private static final String INVALID_GROUP = "invalidGroup";
+  private static final String USER_NAME = "testUser";
 
-  private TransactionManagedAttribute createTestManagedAttribute() throws JsonProcessingException {
-    testManagedAttribute = TransactionManagedAttributeFactory.newManagedAttribute()
+  @Test
+  @SneakyThrows
+  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
+  public void findManagedAttribute_whenNoFieldsAreSelected_manageAttributeReturnedWithAllFields() {
+    TransactionManagedAttribute testManagedAttribute = TransactionManagedAttributeFactory.newManagedAttribute()
+        .group(VALID_GROUP)
         .acceptedValues(new String[] { "dosal" })
         .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
         .build();
+    managedAttributeService.create(testManagedAttribute);
 
-    return managedAttributeService.create(testManagedAttribute);
-  }
-  
-  @BeforeEach
-  public void setup() throws JsonProcessingException { 
-    createTestManagedAttribute();    
-  }  
-
-  @Test
-  public void findManagedAttribute_whenNoFieldsAreSelected_manageAttributeReturnedWithAllFields() {
     TransactionManagedAttributeDto managedAttributeDto = managedResourceRepository
         .findOne(testManagedAttribute.getUuid(), new QuerySpec(TransactionManagedAttributeDto.class));
     assertNotNull(managedAttributeDto);
@@ -61,10 +58,12 @@ public class TransactionManagedAttributeRepositoryCRUDIT extends BaseIntegration
   }
 
   @Test
+  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
   public void create_WithAuthenticatedUser_SetsCreatedBy() {
     TransactionManagedAttributeDto ma = TransactionManagedAttributeDto.builder()
       .uuid(UUID.randomUUID())
       .name("name")
+      .group(VALID_GROUP)
       .managedAttributeType(ManagedAttributeType.STRING)
       .acceptedValues(new String[] { "dosal" })
       .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
@@ -73,13 +72,31 @@ public class TransactionManagedAttributeRepositoryCRUDIT extends BaseIntegration
     TransactionManagedAttributeDto result = managedResourceRepository.findOne(
       managedResourceRepository.create(ma).getUuid(),
       new QuerySpec(TransactionManagedAttributeDto.class));
-    assertEquals(DINA_USER_NAME, result.getCreatedBy());
+    assertEquals(USER_NAME, result.getCreatedBy());
   }
 
   @Test
+  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
+  public void update_WithIncorrectGroup_AccessDeniedException() {
+    TransactionManagedAttributeDto ma = TransactionManagedAttributeDto.builder()
+      .uuid(UUID.randomUUID())
+      .name("name")
+      .group(INVALID_GROUP)
+      .managedAttributeType(ManagedAttributeType.STRING)
+      .acceptedValues(new String[] { "dosal" })
+      .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
+      .build();
+
+    assertThrows(AccessDeniedException.class, () -> managedResourceRepository.create(ma));
+  }
+
+
+  @Test
+  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
   void findOneByKey_whenKeyProvided_managedAttributeFetched() {
     TransactionManagedAttributeDto newAttribute = TransactionManagedAttributeDto.builder()
       .name("Object Store Attribute 1")
+      .group(VALID_GROUP)
       .managedAttributeType(ManagedAttributeType.INTEGER)
       .createdBy("poffm")
       .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())

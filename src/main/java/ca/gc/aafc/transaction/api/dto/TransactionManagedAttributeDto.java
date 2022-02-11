@@ -36,6 +36,8 @@ public class TransactionManagedAttributeDto {
   @PropertyName("id")
   private UUID uuid;
 
+  private String group;
+
   @JsonApiField(patchable = false)
   private String name;
   

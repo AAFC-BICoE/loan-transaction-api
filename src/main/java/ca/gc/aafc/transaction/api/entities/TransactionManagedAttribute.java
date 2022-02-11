@@ -30,9 +30,8 @@ import ca.gc.aafc.dina.i18n.MultilingualDescription;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Entity(name = "managed_attribute")
 @TypeDefs({@TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class),
@@ -40,107 +39,54 @@ import lombok.Setter;
   @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @AllArgsConstructor
 @Builder
+@Data
 @RequiredArgsConstructor
 @NaturalIdCache
 public class TransactionManagedAttribute implements ManagedAttribute {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
+
+  @NaturalId
+  @NotNull
+  @Column(name = "uuid", unique = true)
   private UUID uuid;
+
+  @NotBlank
+  @Column(name = "_group")
+  @Size(max = 50)
+  private String group;
+
+  @NotNull
+  @Type(type = "pgsql_enum")
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type")
   private ManagedAttributeType managedAttributeType;
+
+  @Type(type = "string-array")
+  @Column(columnDefinition = "text[]")
   private String[] acceptedValues;
+
+  @Column(name = "created_on", insertable = false, updatable = false)
+  @Generated(value = GenerationTime.INSERT)
   private OffsetDateTime createdOn;
+
+  @NotBlank
+  @Column(name = "created_by", updatable = false)
   private String createdBy;
+
+  @Type(type = "jsonb")
+  @Column(name = "multilingual_description")
   private MultilingualDescription multilingualDescription;
   
+  @NotNull
   @Column(updatable = false)
   private String name;
 
   @NotBlank
   @Size(max = 50)
   @Column(updatable = false)
-  @Getter
-  @Setter
   private String key;
-
-  @Type(type = "jsonb")
-  @Column(name = "multilingual_description")
-  public MultilingualDescription getMultilingualDescription() {
-    return multilingualDescription;
-  }
-
-  public void setMultilingualDescription(MultilingualDescription multilingualDescription) {
-    this.multilingualDescription = multilingualDescription;
-  }
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  @NaturalId
-  @NotNull
-  @Column(name = "uuid", unique = true)
-  public UUID getUuid() {
-    return uuid;
-  }
-
-  public void setUuid(UUID uuid) {
-    this.uuid = uuid;
-  }
-
-  @NotNull
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  @NotNull
-  @Type(type = "pgsql_enum")
-  @Enumerated(EnumType.STRING)
-  @Column(name = "type")
-  public ManagedAttributeType getManagedAttributeType() {
-    return managedAttributeType;
-  }
-
-  public void setManagedAttributeType(ManagedAttributeType type) {
-    this.managedAttributeType = type;
-  }
-
-  @Type(type = "string-array")
-  @Column(columnDefinition = "text[]")
-  public String[] getAcceptedValues() {
-    return acceptedValues;
-  }
-
-  public void setAcceptedValues(String[] acceptedValues) {
-    this.acceptedValues = acceptedValues;
-  }
-
-  @Column(name = "created_on", insertable = false, updatable = false)
-  @Generated(value = GenerationTime.INSERT)
-  public OffsetDateTime getCreatedOn() {
-    return createdOn;
-  }
-
-  public void setCreatedOn(OffsetDateTime createdOn) {
-    this.createdOn = createdOn;
-  }
-
-  @NotBlank
-  @Column(name = "created_by", updatable = false)
-  public String getCreatedBy() {
-    return createdBy;
-  }
-
-  public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
 
 }
