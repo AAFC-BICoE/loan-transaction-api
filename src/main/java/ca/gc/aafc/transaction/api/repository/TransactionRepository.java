@@ -2,6 +2,7 @@ package ca.gc.aafc.transaction.api.repository;
 
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
+import ca.gc.aafc.dina.repository.external.ExternalResourceProvider;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.dina.security.GroupAuthorizationService;
 import ca.gc.aafc.dina.service.AuditService;
@@ -13,7 +14,6 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
 @Repository
 public class TransactionRepository extends DinaRepository<TransactionDto, Transaction> {
 
@@ -24,7 +24,8 @@ public class TransactionRepository extends DinaRepository<TransactionDto, Transa
     @NonNull GroupAuthorizationService authorizationService,
     Optional<DinaAuthenticatedUser> authenticatedUser,
     @NonNull BuildProperties props,
-    @NonNull AuditService auditService
+    @NonNull AuditService auditService,
+    @NonNull ExternalResourceProvider externalResourceProvider
   ) {
     super(
       dinaService,
@@ -34,7 +35,7 @@ public class TransactionRepository extends DinaRepository<TransactionDto, Transa
       TransactionDto.class,
         Transaction.class,
       null,
-      null,
+      externalResourceProvider,
       props);
     this.authenticatedUser = authenticatedUser;
   }

@@ -1,5 +1,6 @@
 package ca.gc.aafc.transaction.api.entities;
 
+import ca.gc.aafc.dina.dto.ExternalRelationDto;
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
@@ -25,6 +26,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,6 +35,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -99,6 +102,10 @@ public class Transaction implements DinaEntity {
   @Type(type = "jsonb")
   @Valid
   private Shipment shipment;
+
+  @Type(type = "jsonb")
+  @Valid
+  private Set<Role> roles;
 
   @Column(name = "created_by")
   private String createdBy;
