@@ -34,8 +34,8 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -105,7 +105,13 @@ public class Transaction implements DinaEntity {
 
   @Type(type = "jsonb")
   @Valid
-  private List<Role> roles;
+  @Builder.Default
+  private List<AgentRoles> agentRoles = new ArrayList<>();
+
+  // This field is mapped to the dto, but NOT stored in the database.
+  // IgnoreDinaMapping annotation is not respected when using external relationships.
+  @Transient
+  private List<UUID> involvedAgents;
 
   @Column(name = "created_by")
   private String createdBy;

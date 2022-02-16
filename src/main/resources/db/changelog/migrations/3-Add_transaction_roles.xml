@@ -7,7 +7,7 @@
 
   <changeSet context="schema-change" id="3-Add_transaction_roles" author="Brandon Andre">
     <addColumn tableName="transaction">
-      <column name="roles" type="jsonb"/>
+      <column name="agent_roles" type="jsonb"/>
     </addColumn>
   </changeSet>
 

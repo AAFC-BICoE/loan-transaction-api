@@ -2,10 +2,9 @@ package ca.gc.aafc.transaction.api.dto;
 
 import ca.gc.aafc.dina.dto.ExternalRelationDto;
 import ca.gc.aafc.dina.dto.RelatedEntity;
-import ca.gc.aafc.dina.mapper.IgnoreDinaMapping;
 import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import ca.gc.aafc.dina.repository.meta.JsonApiExternalRelation;
-import ca.gc.aafc.transaction.api.entities.Role;
+import ca.gc.aafc.transaction.api.entities.AgentRoles;
 import ca.gc.aafc.transaction.api.entities.Shipment;
 import ca.gc.aafc.transaction.api.entities.Transaction;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -23,6 +22,7 @@ import org.javers.core.metamodel.annotation.TypeName;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 public class TransactionDto extends AttributeMetaInfoProvider {
 
   public static final String TYPENAME = "transaction";
+  public static final String EXTERNAL_AGENT = "person";
 
   @JsonApiId
   @Id
@@ -61,23 +62,24 @@ public class TransactionDto extends AttributeMetaInfoProvider {
 
   private Shipment shipment;
 
-  private List<Role> roles;
+  @Builder.Default
+  private List<AgentRoles> agentRoles = new ArrayList<>();
 
   // Field is mapped using the roles field. See getAgents().
+  // This field is mapped to the entity, but NOT stored in the database.
   @JsonApiRelation
-  @IgnoreDinaMapping
-  private List<ExternalRelationDto> agents;
+  @JsonApiExternalRelation(type = EXTERNAL_AGENT)
+  private List<ExternalRelationDto> involvedAgents;
 
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  public List<ExternalRelationDto> getAgents() {
-    return roles.stream()
-        .map(role -> ExternalRelationDto.builder()
-            .id(role.getAgent().toString())
-            .type("person")
+  public List<ExternalRelationDto> getInvolvedAgents() {
+    return agentRoles.stream()
+        .map(agent -> ExternalRelationDto.builder()
+            .id(agent.getAgent().toString())
+            .type(EXTERNAL_AGENT)
             .build()
-        )
-        .collect(Collectors.toList());
+        ).collect(Collectors.toList());
   }
 }

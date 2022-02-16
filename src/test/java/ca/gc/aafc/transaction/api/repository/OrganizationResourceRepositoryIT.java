@@ -3,7 +3,7 @@ package ca.gc.aafc.transaction.api.repository;
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
-import ca.gc.aafc.transaction.api.entities.Role;
+import ca.gc.aafc.transaction.api.entities.AgentRoles;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
 import io.crnk.core.queryspec.QuerySpec;
@@ -33,14 +33,14 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto transactionDto = TransactionFixture
         .newTransaction()
         .shipment(ShipmentTestFixture.newShipment().build())
-        .roles(new ArrayList<Role>(List.of(
-          Role.builder()
+        .agentRoles(new ArrayList<AgentRoles>(List.of(
+          AgentRoles.builder()
               .agent(UUID.randomUUID())
-              .role("Owner")
+              .roles(new ArrayList<String>(List.of("Role1", "Role2")))
               .build(),
-          Role.builder()
+          AgentRoles.builder()
               .agent(UUID.randomUUID())
-              .role("Consultant")
+              .roles(new ArrayList<String>(List.of("Role3")))
               .build()
         )))
         .build();
@@ -51,8 +51,13 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto result = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
     assertEquals(createdTransaction.getUuid(), result.getUuid());
     assertEquals("user", result.getCreatedBy());
-    assertEquals(2, result.getAgents().size());
-    assertEquals("Owner", result.getRoles().get(0).getRole());
+
+    // Test roles.
+    assertEquals(2, result.getInvolvedAgents().size());
+    assertEquals("Role1", result.getAgentRoles().get(0).getRoles().get(0));
+    assertEquals("Role2", result.getAgentRoles().get(0).getRoles().get(1));
+    assertEquals("Role3", result.getAgentRoles().get(1).getRoles().get(0));
+
     assertEquals(ShipmentTestFixture.CURRENCY, result.getShipment().getCurrency());
 
     // cleanup
