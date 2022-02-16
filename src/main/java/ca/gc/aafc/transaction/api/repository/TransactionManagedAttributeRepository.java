@@ -1,17 +1,13 @@
 package ca.gc.aafc.transaction.api.repository;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.dina.mapper.DinaMapper;
-import ca.gc.aafc.dina.mapper.DinaMappingLayer;
-import ca.gc.aafc.dina.mapper.DinaMappingRegistry;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
@@ -29,7 +25,6 @@ public class TransactionManagedAttributeRepository
 
   private final Optional<DinaAuthenticatedUser> dinaAuthenticatedUser;
   private final TransactionManagedAttributeService dinaService;
-  private final DinaMappingLayer<TransactionManagedAttributeDto, TransactionManagedAttribute> dinaMapper;
 
   public TransactionManagedAttributeRepository(
     @NonNull TransactionManagedAttributeService dinaService,
@@ -47,13 +42,6 @@ public class TransactionManagedAttributeRepository
       null, 
       null,
       props);
-    
-    this.dinaMapper = new DinaMappingLayer<TransactionManagedAttributeDto, TransactionManagedAttribute>(
-      TransactionManagedAttributeDto.class, 
-      new DinaMapper<>(TransactionManagedAttributeDto.class), 
-      dinaService, 
-      new DinaMappingRegistry(TransactionManagedAttributeDto.class)
-    );
     this.dinaAuthenticatedUser = dinaAuthenticatedUser;
     this.dinaService = dinaService;
   }
@@ -80,10 +68,10 @@ public class TransactionManagedAttributeRepository
 
     // Otherwise try a lookup by the managed attribute key.
     // e.g. GET /api/v1/managed-attribute/test-managed-attribute
-    String attributeKey = id.toString();
-    Map<String, TransactionManagedAttribute> results = dinaService.findAttributesForKeys(Set.of(attributeKey));
-    if (results.size() == 1) {
-      return dinaMapper.toDtoSimpleMapping(results.get(attributeKey));
+    TransactionManagedAttribute managedAttribute = dinaService.findOneByKey(id.toString());
+
+    if (managedAttribute != null) {
+      return getMappingLayer().toDtoSimpleMapping(managedAttribute);
     } else {
       throw new ResourceNotFoundException("Managed Attribute not found: " + id);
     }
