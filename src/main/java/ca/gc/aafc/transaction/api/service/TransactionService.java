@@ -1,14 +1,16 @@
 package ca.gc.aafc.transaction.api.service;
 
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.validation.SmartValidator;
+
 import ca.gc.aafc.dina.jpa.BaseDAO;
 import ca.gc.aafc.dina.service.DefaultDinaService;
 import ca.gc.aafc.transaction.api.entities.Transaction;
 import ca.gc.aafc.transaction.api.validation.TransactionValidator;
-import lombok.NonNull;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.SmartValidator;
 
-import java.util.UUID;
+import lombok.NonNull;
 
 @Service
 public class TransactionService extends DefaultDinaService<Transaction> {

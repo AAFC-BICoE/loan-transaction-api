@@ -1,5 +1,10 @@
 package ca.gc.aafc.transaction.api.repository;
 
+import java.util.Optional;
+
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.stereotype.Repository;
+
 import ca.gc.aafc.dina.mapper.DinaMapper;
 import ca.gc.aafc.dina.repository.DinaRepository;
 import ca.gc.aafc.dina.repository.external.ExternalResourceProvider;
@@ -9,11 +14,9 @@ import ca.gc.aafc.dina.service.AuditService;
 import ca.gc.aafc.dina.service.DinaService;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
 import ca.gc.aafc.transaction.api.entities.Transaction;
-import lombok.NonNull;
-import org.springframework.boot.info.BuildProperties;
-import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import lombok.NonNull;
+
 @Repository
 public class TransactionRepository extends DinaRepository<TransactionDto, Transaction> {
 

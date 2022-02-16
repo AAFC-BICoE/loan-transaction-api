@@ -1,10 +1,11 @@
 package ca.gc.aafc.transaction.api.external;
 
-import ca.gc.aafc.dina.repository.external.ExternalResourceProvider;
-import org.springframework.stereotype.Component;
-
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.stereotype.Component;
+
+import ca.gc.aafc.dina.repository.external.ExternalResourceProvider;
 
 @Component
 public class ExternalResourceProviderImplementation implements ExternalResourceProvider {

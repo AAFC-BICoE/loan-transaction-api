@@ -1,5 +1,17 @@
 package ca.gc.aafc.transaction.api.dto;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.javers.core.metamodel.annotation.Id;
+import org.javers.core.metamodel.annotation.PropertyName;
+import org.javers.core.metamodel.annotation.TypeName;
+
 import ca.gc.aafc.dina.dto.ExternalRelationDto;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
@@ -7,6 +19,7 @@ import ca.gc.aafc.dina.repository.meta.JsonApiExternalRelation;
 import ca.gc.aafc.transaction.api.entities.AgentRoles;
 import ca.gc.aafc.transaction.api.entities.Shipment;
 import ca.gc.aafc.transaction.api.entities.Transaction;
+
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
@@ -15,18 +28,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.javers.core.metamodel.annotation.Id;
-import org.javers.core.metamodel.annotation.PropertyName;
-import org.javers.core.metamodel.annotation.TypeName;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -75,16 +76,14 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  public List<ExternalRelationDto> getInvolvedAgents() {
+  public void setInvolvedAgents(List<ExternalRelationDto> fromEntity) {
     if (CollectionUtils.isNotEmpty(agentRoles)) {
-      return agentRoles.stream()
+      involvedAgents = agentRoles.stream()
           .map(agent -> ExternalRelationDto.builder()
               .id(agent.getAgent().toString())
               .type(EXTERNAL_AGENT)
               .build()
           ).collect(Collectors.toList());      
     }
-
-    return null;
   }
 }

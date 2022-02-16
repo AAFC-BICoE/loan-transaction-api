@@ -1,28 +1,29 @@
 package ca.gc.aafc.transaction.api.repository;
 
-import ca.gc.aafc.transaction.api.BaseIntegrationTest;
-import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
-import ca.gc.aafc.transaction.api.dto.TransactionDto;
-import ca.gc.aafc.transaction.api.entities.AgentRoles;
-import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
-import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
-import io.crnk.core.queryspec.QuerySpec;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import javax.inject.Inject;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 
-import javax.inject.Inject;
+import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
+import ca.gc.aafc.transaction.api.BaseIntegrationTest;
+import ca.gc.aafc.transaction.api.dto.TransactionDto;
+import ca.gc.aafc.transaction.api.entities.AgentRoles;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
+
+import io.crnk.core.queryspec.QuerySpec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-@SpringBootTest(properties = {"keycloak.enabled: true"})
-public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
+@SpringBootTest(properties = "keycloak.enabled: true")
+public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
 
   @Inject
   private TransactionRepository transactionRepository;
@@ -80,11 +81,17 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto transactionDto = TransactionFixture.newTransaction().build();
     TransactionDto createdTransaction = transactionRepository.create(transactionDto);
 
+    List<AgentRoles> agentRoleUpdate = createdTransaction.getAgentRoles();
+    agentRoleUpdate.get(0).setRoles(new ArrayList<>(List.of("updatedRole")));
+
     createdTransaction.setTransactionNumber(updatedTransactionNumber);
+    createdTransaction.setAgentRoles(agentRoleUpdate);
+
     transactionRepository.save(createdTransaction);
 
     TransactionDto loadedTransaction = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
     assertEquals(updatedTransactionNumber, loadedTransaction.getTransactionNumber());
+    assertEquals("updatedRole", loadedTransaction.getAgentRoles().get(0).getRoles().get(0));
 
     // cleanup
     transactionRepository.delete(createdTransaction.getUuid());
