@@ -2,9 +2,8 @@ package ca.gc.aafc.transaction.api.repository;
 
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
-import ca.gc.aafc.transaction.api.dto.ExternalAgentRoleRelationDto;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
-import ca.gc.aafc.transaction.api.dto.ExternalAgentRoleRelationDto.AgentRoleMetadata;
+import ca.gc.aafc.transaction.api.entities.Role;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
 import io.crnk.core.queryspec.QuerySpec;
@@ -18,8 +17,8 @@ import javax.inject.Inject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest(properties = {"keycloak.enabled: true"})
@@ -34,14 +33,14 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto transactionDto = TransactionFixture
         .newTransaction()
         .shipment(ShipmentTestFixture.newShipment().build())
-        .roles(new HashSet<>(Set.of(
-          ExternalAgentRoleRelationDto.builder()
-              .id(UUID.randomUUID().toString())
-              .meta(new AgentRoleMetadata("Owner"))
+        .roles(new ArrayList<Role>(List.of(
+          Role.builder()
+              .agent(UUID.randomUUID())
+              .role("Owner")
               .build(),
-          ExternalAgentRoleRelationDto.builder()
-              .id(UUID.randomUUID().toString())
-              .meta(new AgentRoleMetadata("Consultant"))
+          Role.builder()
+              .agent(UUID.randomUUID())
+              .role("Consultant")
               .build()
         )))
         .build();
@@ -52,7 +51,8 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto result = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
     assertEquals(createdTransaction.getUuid(), result.getUuid());
     assertEquals("user", result.getCreatedBy());
-    assertEquals("Owner", result.getRoles().iterator().next().getMeta().getRole());
+    assertEquals(2, result.getAgents().size());
+    assertEquals("Owner", result.getRoles().get(0).getRole());
     assertEquals(ShipmentTestFixture.CURRENCY, result.getShipment().getCurrency());
 
     // cleanup

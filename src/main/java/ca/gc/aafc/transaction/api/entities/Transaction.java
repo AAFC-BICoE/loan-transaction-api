@@ -105,7 +105,7 @@ public class Transaction implements DinaEntity {
 
   @Type(type = "jsonb")
   @Valid
-  private Set<Role> roles;
+  private List<Role> roles;
 
   @Column(name = "created_by")
   private String createdBy;
