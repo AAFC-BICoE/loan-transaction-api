@@ -1,5 +1,6 @@
 package ca.gc.aafc.transaction.api.testsupport.factories;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,10 +21,10 @@ public class TransactionFactory implements TestableEntityFactory<Transaction> {
         .uuid(UUID.randomUUID())
         .group(GROUP)
         .materialDirection(Transaction.Direction.IN)
-        .agentRoles(List.of(
+        .agentRoles(new ArrayList<>(List.of(
             AgentRolesFactory.newAgentRoles().build(),
             AgentRolesFactory.newAgentRoles().build()
-        ))
+        )))
         .transactionNumber(TestableEntityFactory.generateRandomNameLettersOnly(12));
   }
 
