@@ -18,6 +18,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.inject.Inject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -54,10 +59,11 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
         JsonAPITestHelper.toJsonAPIMap(TransactionDto.TYPENAME,
             TransactionFixture.newTransaction()
                 .shipment(ShipmentTestFixture.newShipment().build())
+                .agentRoles(null)
                 .build()));
 
-    response
-      .body("data.id", Matchers.notNullValue());
+    // Validate the response against the specs.
+    response.body("data.id", Matchers.notNullValue());
     OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:

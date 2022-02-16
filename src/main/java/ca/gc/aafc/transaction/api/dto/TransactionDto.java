@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
@@ -75,11 +76,15 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   private OffsetDateTime createdOn;
 
   public List<ExternalRelationDto> getInvolvedAgents() {
-    return agentRoles.stream()
-        .map(agent -> ExternalRelationDto.builder()
-            .id(agent.getAgent().toString())
-            .type(EXTERNAL_AGENT)
-            .build()
-        ).collect(Collectors.toList());
+    if (CollectionUtils.isNotEmpty(agentRoles)) {
+      return agentRoles.stream()
+          .map(agent -> ExternalRelationDto.builder()
+              .id(agent.getAgent().toString())
+              .type(EXTERNAL_AGENT)
+              .build()
+          ).collect(Collectors.toList());      
+    }
+
+    return null;
   }
 }

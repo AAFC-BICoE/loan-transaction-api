@@ -41,8 +41,12 @@ public class TransactionValidator implements Validator {
   /**
    * If AgentRoles are provided, go through to check for any duplicate UUID values.
    * 
-   * @param transaction
-   * @param errors
+   * Please note that a AgentRoles has a array of strings to use for the roles. If a user wants to
+   * attach two roles, it would be using that array. Not by creating two AgentRoles with the same
+   * UUID.
+   * 
+   * @param transaction the transaction entity to check the agentRoles against.
+   * @param errors Error list to add errors to if validation violation is found.
    */
   private void validateUniqueAgentUUID(Transaction transaction, Errors errors) {
     // Check if transaction has any agent roles.
