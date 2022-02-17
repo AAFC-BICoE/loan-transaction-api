@@ -1,7 +1,23 @@
 package ca.gc.aafc.transaction.api.entities;
 
-import java.time.OffsetDateTime;
-import java.util.UUID;
+import ca.gc.aafc.dina.entity.ManagedAttribute;
+import ca.gc.aafc.dina.i18n.MultilingualDescription;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,34 +28,17 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.NaturalIdCache;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-
-import ca.gc.aafc.dina.entity.ManagedAttribute;
-import ca.gc.aafc.dina.i18n.MultilingualDescription;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Entity(name = "managed_attribute")
 @TypeDefs({@TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class),
   @TypeDef(name = "string-array", typeClass = StringArrayType.class),
   @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
-@Data
 @RequiredArgsConstructor
 @NaturalIdCache
 public class TransactionManagedAttribute implements ManagedAttribute {
