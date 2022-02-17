@@ -4,8 +4,10 @@ import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import ca.gc.aafc.transaction.api.entities.Shipment;
 import ca.gc.aafc.transaction.api.entities.Transaction;
+import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.PatchStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +19,9 @@ import org.javers.core.metamodel.annotation.TypeName;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -53,6 +57,10 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   private String remarks;
 
   private Shipment shipment;
+
+  @JsonApiField(patchStrategy = PatchStrategy.SET)
+  @Builder.Default
+  private Map<String, String> managedAttributes = new HashMap<>();
 
   private String createdBy;
   private OffsetDateTime createdOn;
