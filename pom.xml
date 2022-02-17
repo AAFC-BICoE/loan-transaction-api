@@ -6,7 +6,7 @@
   <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Agent API</name>
+  <name>loan-transaction API</name>
   <url>https://github.com/AAFC-BICoE/loan-transaction-api</url>
 
   <parent>
