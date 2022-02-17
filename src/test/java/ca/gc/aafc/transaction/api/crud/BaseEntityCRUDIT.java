@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 
+import javax.transaction.Transactional;
+
 /**
  * Base class for CRUD-based Integration tests. The main purpose is to ensure
  * all entities can be saved/loaded/deleted from a database.
@@ -12,6 +14,7 @@ import ca.gc.aafc.transaction.api.BaseIntegrationTest;
  * order of testing of save/find/remove.
  * 
  */
+@Transactional
 public abstract class BaseEntityCRUDIT extends BaseIntegrationTest {
 
   /**

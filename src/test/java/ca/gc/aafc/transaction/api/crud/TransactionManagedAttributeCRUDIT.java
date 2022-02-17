@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TransactionManagedAttributeCRUDIT extends BaseEntityCRUDIT {
      
-  private TransactionManagedAttribute managedAttributeUnderTest = TransactionManagedAttributeFactory.newManagedAttribute()
+  private final TransactionManagedAttribute managedAttributeUnderTest = TransactionManagedAttributeFactory.newManagedAttribute()
       .group("group")
       .acceptedValues(new String[] { "a", "b" })
       .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())

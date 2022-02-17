@@ -2,10 +2,8 @@ package ca.gc.aafc.transaction.api.entities;
 
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.transaction.api.testsupport.factories.TransactionFactory;
-import ca.gc.aafc.transaction.api.service.TransactionService;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,9 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 public class TransactionCrudIT extends BaseIntegrationTest {
-
-  @Inject
-  private TransactionService transactionService;
 
   @Test
   public void testCreate() {
