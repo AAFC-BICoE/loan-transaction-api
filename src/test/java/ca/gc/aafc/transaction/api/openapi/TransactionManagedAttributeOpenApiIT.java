@@ -2,7 +2,6 @@ package ca.gc.aafc.transaction.api.openapi;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.UUID;
 import javax.inject.Inject;
 
@@ -37,8 +36,6 @@ public class TransactionManagedAttributeOpenApiIT extends BaseRestAssuredTest {
   public static final String API_BASE_PATH = "/api/v1/managed-attribute/";
   private static final String SCHEMA_NAME = "ManagedAttribute";
 
-  private static URL specUrl;
-
   @Inject
   private DatabaseSupportService databaseSupportService;
 
@@ -48,8 +45,6 @@ public class TransactionManagedAttributeOpenApiIT extends BaseRestAssuredTest {
   @SneakyThrows({MalformedURLException.class, URISyntaxException.class})
   protected TransactionManagedAttributeOpenApiIT() {
     super(API_BASE_PATH);
-    specUrl = createSchemaUriBuilder(OpenAPIConstants.SPEC_HOST, OpenAPIConstants.SPEC_PATH).build()
-        .toURL();
   }
 
   @Test
@@ -68,7 +63,8 @@ public class TransactionManagedAttributeOpenApiIT extends BaseRestAssuredTest {
     response.body("data.id", Matchers.notNullValue());
 
     // Validate the specifications.
-    OpenAPI3Assertions.assertRemoteSchema(specUrl, SCHEMA_NAME, response.extract().asString());
+    OpenAPI3Assertions.assertRemoteSchema(OpenAPIConstants.TRANSACTION_API_SPECS_URL,
+        SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
