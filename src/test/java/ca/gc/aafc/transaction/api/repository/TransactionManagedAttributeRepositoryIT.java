@@ -11,8 +11,7 @@ import ca.gc.aafc.dina.entity.ManagedAttribute.ManagedAttributeType;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
-import ca.gc.aafc.transaction.api.testsupport.factories.MultilingualDescriptionFactory;
-
+import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttributeFixture;
 import io.crnk.core.queryspec.QuerySpec;
 import lombok.SneakyThrows;
 
@@ -35,12 +34,10 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   @SneakyThrows
   @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
   public void findManagedAttribute_whenNoFieldsAreSelected_manageAttributeReturnedWithAllFields() {
-    TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeDto.builder()
+    TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
         .group(VALID_GROUP)
-        .name("name")
         .acceptedValues(new String[] { "dosal" })
         .managedAttributeType(ManagedAttributeType.STRING)
-        .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
         .build();
     UUID managedResourceUUID = managedResourceRepository.create(testManagedAttribute).getUuid();
 
@@ -61,13 +58,8 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   @Test
   @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
   public void create_WithAuthenticatedUser_SetsCreatedBy() {
-    TransactionManagedAttributeDto ma = TransactionManagedAttributeDto.builder()
-      .uuid(UUID.randomUUID())
-      .name("name")
+    TransactionManagedAttributeDto ma = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
       .group(VALID_GROUP)
-      .managedAttributeType(ManagedAttributeType.STRING)
-      .acceptedValues(new String[] { "dosal" })
-      .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
       .build();
 
     TransactionManagedAttributeDto result = managedResourceRepository.findOne(
@@ -79,13 +71,10 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   @Test
   @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
   public void update_WithIncorrectGroup_AccessDeniedException() {
-    TransactionManagedAttributeDto ma = TransactionManagedAttributeDto.builder()
-      .uuid(UUID.randomUUID())
-      .name("name")
+    TransactionManagedAttributeDto ma = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
       .group(INVALID_GROUP)
       .managedAttributeType(ManagedAttributeType.STRING)
       .acceptedValues(new String[] { "dosal" })
-      .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
       .build();
 
     assertThrows(AccessDeniedException.class, () -> managedResourceRepository.create(ma));
@@ -95,12 +84,10 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   @Test
   @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
   void findOneByKey_whenKeyProvided_managedAttributeFetched() {
-    TransactionManagedAttributeDto newAttribute = TransactionManagedAttributeDto.builder()
+    TransactionManagedAttributeDto newAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
       .name("Object Store Attribute 1")
       .group(VALID_GROUP)
-      .managedAttributeType(ManagedAttributeType.INTEGER)
       .createdBy("poffm")
-      .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
       .build();
 
     UUID newAttributeUuid = managedResourceRepository.create(newAttribute).getUuid();
