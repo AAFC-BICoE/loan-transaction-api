@@ -11,9 +11,7 @@ import ca.gc.aafc.dina.entity.ManagedAttribute.ManagedAttributeType;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
-import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
 import ca.gc.aafc.transaction.api.testsupport.factories.MultilingualDescriptionFactory;
-import ca.gc.aafc.transaction.api.testsupport.factories.TransactionManagedAttributeFactory;
 
 import io.crnk.core.queryspec.QuerySpec;
 import lombok.SneakyThrows;
@@ -37,17 +35,20 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   @SneakyThrows
   @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
   public void findManagedAttribute_whenNoFieldsAreSelected_manageAttributeReturnedWithAllFields() {
-    TransactionManagedAttribute testManagedAttribute = TransactionManagedAttributeFactory.newManagedAttribute()
+    TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeDto.builder()
         .group(VALID_GROUP)
+        .name("name")
         .acceptedValues(new String[] { "dosal" })
+        .managedAttributeType(ManagedAttributeType.STRING)
         .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
         .build();
-    managedAttributeService.create(testManagedAttribute);
+    UUID managedResourceUUID = managedResourceRepository.create(testManagedAttribute).getUuid();
 
     TransactionManagedAttributeDto managedAttributeDto = managedResourceRepository
-        .findOne(testManagedAttribute.getUuid(), new QuerySpec(TransactionManagedAttributeDto.class));
+        .findOne(managedResourceUUID, new QuerySpec(TransactionManagedAttributeDto.class));
+
     assertNotNull(managedAttributeDto);
-    assertEquals(testManagedAttribute.getUuid(), managedAttributeDto.getUuid());
+    assertEquals(managedResourceUUID, managedAttributeDto.getUuid());
     assertArrayEquals(testManagedAttribute.getAcceptedValues(),
         managedAttributeDto.getAcceptedValues());
     assertEquals(testManagedAttribute.getManagedAttributeType(),
