@@ -28,9 +28,7 @@ import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
 
-@TestPropertySource(properties = {
-  "spring.config.additional-location=classpath:application-test.yml",
-  "dev-user.enabled=true"})
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
   classes = TransactionModuleApiLauncher.class
