@@ -117,6 +117,7 @@ public class Transaction implements DinaEntity {
   @Transient
   private List<UUID> involvedAgents;
 
+  @Type(type = "jsonb")
   @NotNull
   @Builder.Default
   private Map<String, String> managedAttributes = new HashMap<>();

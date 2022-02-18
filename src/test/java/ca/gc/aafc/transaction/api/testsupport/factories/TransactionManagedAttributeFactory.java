@@ -23,6 +23,7 @@ public class TransactionManagedAttributeFactory implements TestableEntityFactory
    */
   public static TransactionManagedAttribute.TransactionManagedAttributeBuilder newManagedAttribute() {
     return TransactionManagedAttribute.builder()
+        .group("group")
         .uuid(UUID.randomUUID())
         .name(TestableEntityFactory.generateRandomNameLettersOnly(12))
         .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())

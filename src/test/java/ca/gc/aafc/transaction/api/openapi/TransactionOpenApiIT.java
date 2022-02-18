@@ -54,7 +54,6 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
 
   @Test
   public void post_NewTransaction_ReturnsOkayAndBody() {
-
     // Generate post response.
     ValidatableResponse response = sendPost("",
         JsonAPITestHelper.toJsonAPIMap(
