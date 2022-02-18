@@ -19,7 +19,7 @@ public class TransactionValidator implements Validator {
 
   private final MessageSource messageSource;
 
-  static final String DUPLICATED_UUID_FOUND_KEY = "validation.constraint.violation.transaction.duplicateRoleUUID";
+  static final String DUPLICATED_UUID_FOUND_KEY = "transaction.duplicateRoleUUID";
 
   public TransactionValidator(MessageSource messageSource) {
     this.messageSource = messageSource;

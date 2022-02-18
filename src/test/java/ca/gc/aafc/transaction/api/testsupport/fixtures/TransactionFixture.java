@@ -2,6 +2,7 @@ package ca.gc.aafc.transaction.api.testsupport.fixtures;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -25,6 +26,7 @@ public final class TransactionFixture {
         .materialDirection(Transaction.Direction.IN)
         .transactionNumber(RandomStringUtils.randomAlphabetic(12))
         .otherIdentifiers(List.of("T2123", "P245643"))
+        .managedAttributes(new HashMap<>())
         .group(GROUP);
   }
 }

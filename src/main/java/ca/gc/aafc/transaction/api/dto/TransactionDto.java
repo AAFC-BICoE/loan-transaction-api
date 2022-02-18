@@ -19,15 +19,19 @@ import ca.gc.aafc.dina.repository.meta.JsonApiExternalRelation;
 import ca.gc.aafc.transaction.api.entities.AgentRoles;
 import ca.gc.aafc.transaction.api.entities.Shipment;
 import ca.gc.aafc.transaction.api.entities.Transaction;
-
+import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.PatchStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -72,6 +76,10 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   @JsonApiRelation
   @JsonApiExternalRelation(type = EXTERNAL_AGENT)
   private List<ExternalRelationDto> involvedAgents;
+
+  @JsonApiField(patchStrategy = PatchStrategy.SET)
+  @Builder.Default
+  private Map<String, String> managedAttributes = new HashMap<>();
 
   private String createdBy;
   private OffsetDateTime createdOn;

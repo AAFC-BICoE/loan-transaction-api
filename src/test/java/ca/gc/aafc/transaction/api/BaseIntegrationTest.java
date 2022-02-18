@@ -1,6 +1,9 @@
 package ca.gc.aafc.transaction.api;
 
-import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
+import java.util.Properties;
+import javax.inject.Inject;
+
+import ca.gc.aafc.transaction.api.service.TransactionService;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -8,12 +11,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.Properties;
+import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
+import ca.gc.aafc.transaction.api.service.TransactionManagedAttributeService;
 
 @SpringBootTest(classes = {TransactionModuleApiLauncher.class, BaseIntegrationTest.TestConfig.class})
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-@ContextConfiguration(initializers = { PostgresTestContainerInitializer.class })
+@ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
 public class BaseIntegrationTest {
+
+  @Inject
+  protected TransactionService transactionService;
+
+  @Inject
+  protected TransactionManagedAttributeService managedAttributeService;
 
   @TestConfiguration
   public static class TestConfig {

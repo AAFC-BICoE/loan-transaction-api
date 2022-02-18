@@ -3,7 +3,9 @@ package ca.gc.aafc.transaction.api.entities;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -114,6 +116,10 @@ public class Transaction implements DinaEntity {
   // IgnoreDinaMapping annotation is not respected when using external relationships.
   @Transient
   private List<UUID> involvedAgents;
+
+  @NotNull
+  @Builder.Default
+  private Map<String, String> managedAttributes = new HashMap<>();
 
   @Column(name = "created_by")
   private String createdBy;
