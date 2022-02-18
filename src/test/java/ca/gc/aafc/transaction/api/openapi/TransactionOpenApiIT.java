@@ -2,6 +2,7 @@ package ca.gc.aafc.transaction.api.openapi;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 
@@ -26,11 +27,11 @@ import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
 
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
   classes = TransactionModuleApiLauncher.class
 )
-@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 @ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
 public class TransactionOpenApiIT extends BaseRestAssuredTest {
 
@@ -43,7 +44,6 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
   @Inject
   private TransactionTestingHelper transactionTestingHelper;
 
-
   @SneakyThrows({MalformedURLException.class, URISyntaxException.class})
   protected TransactionOpenApiIT() {
     super(API_BASE_PATH);
@@ -51,22 +51,28 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
 
   @Test
   public void post_NewTransaction_ReturnsOkayAndBody() {
-
+    // Generate post response.
     ValidatableResponse response = sendPost("",
-        JsonAPITestHelper.toJsonAPIMap(TransactionDto.TYPENAME,
-            TransactionFixture.newTransaction()
+        JsonAPITestHelper.toJsonAPIMap(
+            TransactionDto.TYPENAME,
+            JsonAPITestHelper.toAttributeMap(TransactionFixture.newTransaction()
                 .shipment(ShipmentTestFixture.newShipment().build())
-                .build()));
+                .build()
+            ),
+            Map.of(
+              "involvedAgents", JsonAPITestHelper.generateExternalRelationList("person", 1)
+            ),
+            null
+        )
+    );
 
-    response
-      .body("data.id", Matchers.notNullValue());
-    OpenAPI3Assertions.assertRemoteSchema(OpenAPIConstants.TRANSACTION_API_SPECS_URL
-        , SCHEMA_NAME, response.extract().asString());
+    // Validate the response against the specs.
+    response.body("data.id", Matchers.notNullValue());
+    OpenAPI3Assertions.assertRemoteSchema(OpenAPIConstants.TRANSACTION_API_SPECS_URL, SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
     transactionTestingHelper.doInTransactionWithoutResult(
-        (a) -> databaseSupportService.deleteByProperty(Transaction.class, "uuid", uuid));
+        operation -> databaseSupportService.deleteByProperty(Transaction.class, "uuid", uuid));
   }
-
 }

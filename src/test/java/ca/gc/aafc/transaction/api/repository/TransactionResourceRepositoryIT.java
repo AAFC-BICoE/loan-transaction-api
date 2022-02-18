@@ -1,23 +1,29 @@
 package ca.gc.aafc.transaction.api.repository;
 
-import ca.gc.aafc.transaction.api.BaseIntegrationTest;
-import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
-import ca.gc.aafc.transaction.api.dto.TransactionDto;
-import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
-import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
-import io.crnk.core.queryspec.QuerySpec;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import javax.inject.Inject;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 
-import javax.inject.Inject;
+import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
+import ca.gc.aafc.transaction.api.BaseIntegrationTest;
+import ca.gc.aafc.transaction.api.dto.TransactionDto;
+import ca.gc.aafc.transaction.api.entities.AgentRoles;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
+
+import io.crnk.core.queryspec.QuerySpec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(properties = {"keycloak.enabled: true"})
-public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
+@SpringBootTest(properties = "keycloak.enabled: true")
+public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
 
   @Inject
   private TransactionRepository transactionRepository;
@@ -28,6 +34,16 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto transactionDto = TransactionFixture
         .newTransaction()
         .shipment(ShipmentTestFixture.newShipment().build())
+        .agentRoles(new ArrayList<AgentRoles>(List.of(
+          AgentRoles.builder()
+              .agent(UUID.randomUUID())
+              .roles(new ArrayList<String>(List.of("Role1", "Role2")))
+              .build(),
+          AgentRoles.builder()
+              .agent(UUID.randomUUID())
+              .roles(new ArrayList<String>(List.of("Role3")))
+              .build()
+        )))
         .build();
 
     TransactionDto createdTransaction = transactionRepository.create(transactionDto);
@@ -36,6 +52,13 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto result = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
     assertEquals(createdTransaction.getUuid(), result.getUuid());
     assertEquals("user", result.getCreatedBy());
+
+    // Test roles.
+    assertEquals(2, result.getInvolvedAgents().size());
+    assertEquals("Role1", result.getAgentRoles().get(0).getRoles().get(0));
+    assertEquals("Role2", result.getAgentRoles().get(0).getRoles().get(1));
+    assertEquals("Role3", result.getAgentRoles().get(1).getRoles().get(0));
+
     assertEquals(ShipmentTestFixture.CURRENCY, result.getShipment().getCurrency());
 
     // cleanup
@@ -58,11 +81,17 @@ public class OrganizationResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto transactionDto = TransactionFixture.newTransaction().build();
     TransactionDto createdTransaction = transactionRepository.create(transactionDto);
 
+    List<AgentRoles> agentRoleUpdate = createdTransaction.getAgentRoles();
+    agentRoleUpdate.get(0).setRoles(new ArrayList<>(List.of("updatedRole")));
+
     createdTransaction.setTransactionNumber(updatedTransactionNumber);
+    createdTransaction.setAgentRoles(agentRoleUpdate);
+
     transactionRepository.save(createdTransaction);
 
     TransactionDto loadedTransaction = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
     assertEquals(updatedTransactionNumber, loadedTransaction.getTransactionNumber());
+    assertEquals("updatedRole", loadedTransaction.getAgentRoles().get(0).getRoles().get(0));
 
     // cleanup
     transactionRepository.delete(createdTransaction.getUuid());
