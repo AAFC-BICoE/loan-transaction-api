@@ -2,7 +2,6 @@ package ca.gc.aafc.transaction.api.openapi;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -61,7 +60,7 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
                 .build()
             ),
             Map.of(
-              "involvedAgents", getRelationshipListType("person", UUID.randomUUID().toString())
+              "involvedAgents", JsonAPITestHelper.generateExternalRelationList("person", 1)
             ),
             null
         )
@@ -74,13 +73,6 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
     transactionTestingHelper.doInTransactionWithoutResult(
-        (a) -> databaseSupportService.deleteByProperty(Transaction.class, "uuid", uuid));
+        operation -> databaseSupportService.deleteByProperty(Transaction.class, "uuid", uuid));
   }
-
-  private Map<String, Object> getRelationshipListType(String type, String uuid) {
-    return Map.of("data", List.of(Map.of(
-      "id", uuid,
-      "type", type)));
-  }
-
 }
