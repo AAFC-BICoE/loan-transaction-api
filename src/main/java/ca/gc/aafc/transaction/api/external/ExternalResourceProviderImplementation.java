@@ -11,7 +11,8 @@ import ca.gc.aafc.dina.repository.external.ExternalResourceProvider;
 public class ExternalResourceProviderImplementation implements ExternalResourceProvider {
 
   public static final Map<String, String> TYPE_TO_REFERENCE_MAP = Map.of(
-    "person", "agent/api/v1/person"
+    "person", "agent/api/v1/person",
+    "metadata", "objectstore/api/v1/metadata"
   );
 
   @Override

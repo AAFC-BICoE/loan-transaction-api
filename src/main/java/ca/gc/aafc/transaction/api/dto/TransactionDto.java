@@ -81,6 +81,11 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   @Builder.Default
   private Map<String, String> managedAttributes = new HashMap<>();
 
+  @JsonApiExternalRelation(type = "metadata")
+  @JsonApiRelation
+  @Builder.Default
+  private List<ExternalRelationDto> attachment = new ArrayList<>();
+
   private String createdBy;
   private OffsetDateTime createdOn;
 
