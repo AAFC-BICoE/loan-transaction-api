@@ -79,26 +79,4 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
 
     assertThrows(AccessDeniedException.class, () -> managedResourceRepository.create(ma));
   }
-
-
-  @Test
-  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
-  void findOneByKey_whenKeyProvided_managedAttributeFetched() {
-    TransactionManagedAttributeDto newAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
-      .name("Object Store Attribute 1")
-      .group(VALID_GROUP)
-      .createdBy("poffm")
-      .build();
-
-    UUID newAttributeUuid = managedResourceRepository.create(newAttribute).getUuid();
-
-    QuerySpec querySpec = new QuerySpec(TransactionManagedAttributeDto.class);
-
-    // Fetch using the key instead of the UUID:
-    TransactionManagedAttributeDto fetchedAttribute = managedResourceRepository
-      .findOne("object_store_attribute_1", querySpec);
-
-    assertEquals(newAttributeUuid, fetchedAttribute.getUuid());
-  }
-    
 }
