@@ -6,8 +6,8 @@ import io.crnk.core.engine.parser.StringMapper;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Lets you use either the UUID or the component type + key as the ID.
- * e.g. /managed-attribute/collecting_event.attribute_name.
+ * Lets you use either the UUID or key as the ID.
+ * e.g. /managed-attribute/key
  */
 @RequiredArgsConstructor
 public class ManagedAttributeIdMapper implements StringMapper<Object> {
