@@ -21,6 +21,7 @@ public class TransactionFactory implements TestableEntityFactory<Transaction> {
         .uuid(UUID.randomUUID())
         .group(GROUP)
         .materialDirection(Transaction.Direction.IN)
+        .attachment(List.of(UUID.randomUUID()))
         .agentRoles(new ArrayList<>(List.of(
             AgentRolesFactory.newAgentRoles().build(),
             AgentRolesFactory.newAgentRoles().build()

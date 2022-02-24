@@ -56,11 +56,13 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
         JsonAPITestHelper.toJsonAPIMap(
             TransactionDto.TYPENAME,
             JsonAPITestHelper.toAttributeMap(TransactionFixture.newTransaction()
+                .attachment(null) // Will be added as a relationship.
                 .shipment(ShipmentTestFixture.newShipment().build())
                 .build()
             ),
             Map.of(
-              "involvedAgents", JsonAPITestHelper.generateExternalRelationList("person", 1)
+              "involvedAgents", JsonAPITestHelper.generateExternalRelationList("person", 1),
+              "attachment", JsonAPITestHelper.generateExternalRelationList("metadata", 1)
             ),
             null
         )
