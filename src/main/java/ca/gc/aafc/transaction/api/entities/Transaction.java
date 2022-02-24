@@ -122,6 +122,11 @@ public class Transaction implements DinaEntity {
   @Builder.Default
   private Map<String, String> managedAttributes = new HashMap<>();
 
+  @Type(type = "list-array")
+  @Column(name = "attachment", columnDefinition = "uuid[]")
+  @Builder.Default
+  private List<UUID> attachment = new ArrayList<>();
+
   @Column(name = "created_by")
   private String createdBy;
 

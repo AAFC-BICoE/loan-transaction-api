@@ -6,5 +6,6 @@
   <include file="db/changelog/migrations/1-Add_Shipment_to_Transaction.xml"/>
   <include file="db/changelog/migrations/2-Add_Transaction_Managed_Attributes.xml"/>
   <include file="db/changelog/migrations/3-Add_transaction_roles.xml"/>
+  <include file="db/changelog/migrations/4-Add_attachment_to_transaction.xml"/>
 
 </databaseChangeLog>
