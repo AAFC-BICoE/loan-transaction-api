@@ -13,6 +13,8 @@ import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
 @Component
 public class TransactionManagedAttributeValidator implements Validator {
 
+  public static final String EMPTY_DESCRIPTION = "description.isEmpty";
+
   private final MessageSource messageSource;
 
   public TransactionManagedAttributeValidator(MessageSource messageSource) {
@@ -28,11 +30,14 @@ public class TransactionManagedAttributeValidator implements Validator {
   public void validate(Object target, Errors errors) {
     TransactionManagedAttribute ma = (TransactionManagedAttribute) target;
 
-    if (CollectionUtils.isEmpty(ma.getMultilingualDescription().getDescriptions()) ||
-      ma.getMultilingualDescription().getDescriptions().stream().anyMatch(p -> StringUtils.isBlank(p.getDesc()))) {
-      String errorMessage = messageSource.getMessage("description.isEmpty", null,
-        LocaleContextHolder.getLocale());
-      errors.rejectValue("multilingualDescription", "description.isEmpty", null, errorMessage);
+    // If a multilingual description is provided, ensure it's not empty.
+    if (ma.getMultilingualDescription() != null) {
+      if (CollectionUtils.isEmpty(ma.getMultilingualDescription().getDescriptions()) ||
+          ma.getMultilingualDescription().getDescriptions().stream().anyMatch(p -> StringUtils.isBlank(p.getDesc()))) {
+        String errorMessage = messageSource.getMessage(EMPTY_DESCRIPTION, null, LocaleContextHolder.getLocale());
+        errors.rejectValue("multilingualDescription", EMPTY_DESCRIPTION, null, errorMessage);
+      }      
     }
+
   }
 }
