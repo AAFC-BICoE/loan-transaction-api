@@ -2,9 +2,14 @@ package ca.gc.aafc.transaction.api.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
+import javax.validation.ValidationException;
 
+import ca.gc.aafc.dina.entity.ManagedAttribute;
+import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttributeFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +32,9 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
 
   @Inject
   private TransactionRepository transactionRepository;
+
+  @Inject
+  private TransactionManagedAttributeRepository managedResourceRepository;
 
   @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":staff")
   @Test
@@ -72,6 +80,28 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
     Assertions
         .assertThrows(AccessDeniedException.class,
             () -> transactionRepository.create(transactionDto));
+  }
+
+  @Test
+  @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":COLLECTION_MANAGER")
+  public void create_onManagedAttributeValue_validationOccur() {
+    // Create the managed attribute for bool
+    TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
+        .group(TransactionFixture.GROUP)
+        .managedAttributeType(ManagedAttribute.ManagedAttributeType.BOOL)
+        .build();
+    String key = managedResourceRepository.create(testManagedAttribute).getKey();
+
+    TransactionDto transactionDto = TransactionFixture.newTransaction()
+        .managedAttributes( Map.of(key, "xyz"))
+        .build();
+    Assertions
+        .assertThrows(ValidationException.class,
+            () -> transactionRepository.create(transactionDto));
+
+    // fix the error and retry
+    transactionDto.setManagedAttributes(Map.of(key, "true"));
+    transactionRepository.create(transactionDto);
   }
 
   @Test
