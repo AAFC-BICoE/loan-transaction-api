@@ -1,7 +1,7 @@
 package ca.gc.aafc.transaction.api.entities;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -19,7 +19,7 @@ public class AgentRoles {
   private UUID agent;
 
   @NotEmpty
-  private ArrayList<@NotBlank String> roles;
+  private List<@NotBlank String> roles;
 
   private LocalDate date;
 
