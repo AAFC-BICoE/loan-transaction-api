@@ -33,7 +33,7 @@ public class TransactionManagedAttributeValidator implements Validator {
     // If a multilingual description is provided, ensure it's not empty.
     if (ma.getMultilingualDescription() != null) {
       if (CollectionUtils.isEmpty(ma.getMultilingualDescription().getDescriptions()) ||
-          ma.getMultilingualDescription().getDescriptions().stream().anyMatch(p -> StringUtils.isBlank(p.getDesc()))) {
+          ma.getMultilingualDescription().hasBlankDescription()) {
         String errorMessage = messageSource.getMessage(EMPTY_DESCRIPTION, null, LocaleContextHolder.getLocale());
         errors.rejectValue("multilingualDescription", EMPTY_DESCRIPTION, null, errorMessage);
       }      

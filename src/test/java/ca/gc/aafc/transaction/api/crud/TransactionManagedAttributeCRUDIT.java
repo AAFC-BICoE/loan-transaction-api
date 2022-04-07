@@ -38,10 +38,7 @@ public class TransactionManagedAttributeCRUDIT extends BaseEntityCRUDIT {
     TransactionManagedAttribute blankDescription = TransactionManagedAttributeFactory.newManagedAttribute()
       .acceptedValues(new String[] { "a", "b" })
       .multilingualDescription(MultilingualDescription.builder()
-          .descriptions(List.of(MultilingualDescription.MultilingualPair.builder()
-            .desc("")
-            .lang("en")
-            .build()))
+          .descriptions(List.of(MultilingualDescription.MultilingualPair.of("en", "")))
           .build())
       .build();
 
