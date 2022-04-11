@@ -43,15 +43,8 @@ public class TransactionManagedAttributeValidatorTest extends BaseIntegrationTes
     // Create a multilingual description that contains an empty description.
     TransactionManagedAttribute emptyDescription = TransactionManagedAttributeFactory.newManagedAttribute()
         .multilingualDescription(MultilingualDescription.builder().descriptions(List.of(
-          MultilingualPair.builder()
-              .lang("en")
-              .desc("Filled in description")
-              .build(),
-          MultilingualPair.builder()
-              .lang("en")
-              .desc("")
-              .build()
-        ))
+          MultilingualPair.of("en", "Filled in description"),
+          MultilingualPair.of("en", "")))
         .build()
     )
     .build();

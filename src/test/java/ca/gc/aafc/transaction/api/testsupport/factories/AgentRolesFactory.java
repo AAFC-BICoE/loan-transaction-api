@@ -20,7 +20,7 @@ public class AgentRolesFactory implements TestableEntityFactory<AgentRoles> {
   public static AgentRoles.AgentRolesBuilder newAgentRoles() {
     return AgentRoles.builder()
         .agent(UUID.randomUUID())
-        .roles(new ArrayList<String>(List.of("Role1", "Role2")))
+        .roles(new ArrayList<>(List.of("Role1", "Role2")))
         .date(LocalDate.now())
         .remarks(RandomStringUtils.randomAlphabetic(30));
   }
