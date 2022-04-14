@@ -2,8 +2,6 @@ package ca.gc.aafc.transaction.api.dto;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -69,22 +67,22 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   private Shipment shipment;
 
   @Builder.Default
-  private List<AgentRoles> agentRoles = new ArrayList<>();
+  private List<AgentRoles> agentRoles = List.of();
 
   // Field is mapped using the roles field. See getAgents().
   // This field is mapped to the entity, but NOT stored in the database.
   @JsonApiRelation
   @JsonApiExternalRelation(type = EXTERNAL_AGENT)
-  private List<ExternalRelationDto> involvedAgents;
+  private List<ExternalRelationDto> involvedAgents = List.of();
 
   @JsonApiField(patchStrategy = PatchStrategy.SET)
   @Builder.Default
-  private Map<String, String> managedAttributes = new HashMap<>();
+  private Map<String, String> managedAttributes = Map.of();
 
   @JsonApiExternalRelation(type = "metadata")
   @JsonApiRelation
   @Builder.Default
-  private List<ExternalRelationDto> attachment = new ArrayList<>();
+  private List<ExternalRelationDto> attachment = List.of();
 
   private String createdBy;
   private OffsetDateTime createdOn;
