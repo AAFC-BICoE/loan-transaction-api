@@ -12,7 +12,8 @@ public class ExternalResourceProviderImplementation implements ExternalResourceP
 
   public static final Map<String, String> TYPE_TO_REFERENCE_MAP = Map.of(
     "person", "agent/api/v1/person",
-    "metadata", "objectstore/api/v1/metadata"
+    "metadata", "objectstore/api/v1/metadata",
+    "material-sample", "collection/api/v1/material-sample"
   );
 
   @Override
