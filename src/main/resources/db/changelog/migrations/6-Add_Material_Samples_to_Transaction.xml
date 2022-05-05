@@ -7,7 +7,7 @@
 
   <changeSet context="schema-change" id="6-Add_Material_Samples_to_Transaction" author="Mike Sun">
     <addColumn tableName="transaction">
-      <column name="material_sample" type="jsonb"/>
+      <column name="material_sample" type="uuid[]"/>
     </addColumn>
   </changeSet>
 
