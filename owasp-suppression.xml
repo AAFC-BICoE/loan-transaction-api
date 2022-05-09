@@ -6,9 +6,5 @@
     <suppress>
         <notes>CVE about Keycloak Server</notes>
         <cve>CVE-2021-4133</cve>
-    </suppress>
-    <suppress>
-        <notes>Need more testing</notes>
-        <cve>CVE-2022-0839</cve>
-    </suppress>
+    </suppress
 </suppressions>
