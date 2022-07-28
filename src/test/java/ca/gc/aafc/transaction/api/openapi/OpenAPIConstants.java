@@ -9,7 +9,7 @@ public final class OpenAPIConstants {
 
   private static final String SCHEME = "https";
   static final String SPEC_HOST = "raw.githubusercontent.com";
-  static final String SPEC_PATH = "DINA-Web/loan-transaction-specs/master/schema/transaction-api.yml";
+  static final String SPEC_PATH = "DINA-Web/loan-transaction-specs/23acd5e0af970a3c77d44b0c05c11a8eceaebfe3/schema/transaction-api.yml";
 
   public static final URL TRANSACTION_API_SPECS_URL = buildOpenAPISpecsURL();
 

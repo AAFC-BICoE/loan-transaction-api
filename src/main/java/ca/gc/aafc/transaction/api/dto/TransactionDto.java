@@ -77,7 +77,7 @@ public class TransactionDto extends AttributeMetaInfoProvider {
 
   @JsonApiRelation
   @JsonApiExternalRelation(type = "material-sample")
-  private List<ExternalRelationDto> materialSample = List.of();
+  private List<ExternalRelationDto> materialSamples = List.of();
 
   @JsonApiField(patchStrategy = PatchStrategy.SET)
   @Builder.Default
