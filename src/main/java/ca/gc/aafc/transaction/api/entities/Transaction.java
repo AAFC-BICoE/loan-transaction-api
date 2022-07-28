@@ -117,6 +117,9 @@ public class Transaction implements DinaEntity {
   @Transient
   private List<UUID> involvedAgents;
 
+  @Transient
+  private List<UUID> materialSamples;
+
   @Type(type = "jsonb")
   @NotNull
   @Builder.Default

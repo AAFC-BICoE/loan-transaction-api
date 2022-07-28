@@ -57,10 +57,12 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
             TransactionDto.TYPENAME,
             JsonAPITestHelper.toAttributeMap(TransactionFixture.newTransaction()
                 .attachment(null) // Will be added as a relationship.
+                .materialSamples(null) // Will be added as a relationship.
                 .shipment(ShipmentTestFixture.newShipment().build())
                 .build()
             ),
             Map.of(
+              "materialSamples", JsonAPITestHelper.generateExternalRelationList("material-sample", 1),
               "involvedAgents", JsonAPITestHelper.generateExternalRelationList("person", 1),
               "attachment", JsonAPITestHelper.generateExternalRelationList("metadata", 1)
             ),
