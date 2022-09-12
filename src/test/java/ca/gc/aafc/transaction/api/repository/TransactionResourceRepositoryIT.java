@@ -36,7 +36,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
   @Inject
   private TransactionManagedAttributeRepository managedResourceRepository;
 
-  @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":staff")
+  @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":USER")
   @Test
   public void create_onValidData_transactionPersisted() {
     TransactionDto transactionDto = TransactionFixture
@@ -74,7 +74,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = "wronggroup:STAFF")
+  @WithMockKeycloakUser(username = "user", groupRole = "wronggroup:USER")
   public void create_onWrongGroup_accessDenied() {
     TransactionDto transactionDto = TransactionFixture.newTransaction().build();
     Assertions
@@ -83,7 +83,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":COLLECTION_MANAGER")
+  @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":SUPER_USER")
   public void create_onManagedAttributeValue_validationOccur() {
     // Create the managed attribute for bool
     TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
@@ -105,7 +105,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
   }
 
   @Test
-  @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":COLLECTION_MANAGER")
+  @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":SUPER_USER")
   public void save_onUpdateData_FieldsUpdated() {
     final String updatedTransactionNumber = "Updated T2";
     TransactionDto transactionDto = TransactionFixture.newTransaction().build();

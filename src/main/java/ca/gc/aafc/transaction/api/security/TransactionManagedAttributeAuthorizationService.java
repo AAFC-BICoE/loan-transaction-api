@@ -8,17 +8,17 @@ import ca.gc.aafc.dina.security.PermissionAuthorizationService;
 @Service
 public class TransactionManagedAttributeAuthorizationService extends PermissionAuthorizationService {
   @Override
-  @PreAuthorize("hasMinimumGroupAndRolePermissions(@currentUser, 'COLLECTION_MANAGER', #entity)")
+  @PreAuthorize("hasMinimumGroupAndRolePermissions(@currentUser, 'SUPER_USER', #entity)")
   public void authorizeCreate(Object entity) {
   }
 
   @Override
-  @PreAuthorize("hasMinimumGroupAndRolePermissions(@currentUser, 'COLLECTION_MANAGER', #entity)")
+  @PreAuthorize("hasMinimumGroupAndRolePermissions(@currentUser, 'SUPER_USER', #entity)")
   public void authorizeUpdate(Object entity) {
   }
 
   @Override
-  @PreAuthorize("hasMinimumGroupAndRolePermissions(@currentUser, 'COLLECTION_MANAGER', #entity)")
+  @PreAuthorize("hasMinimumGroupAndRolePermissions(@currentUser, 'SUPER_USER', #entity)")
   public void authorizeDelete(Object entity) {
   }
 
