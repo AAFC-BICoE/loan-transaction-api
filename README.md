@@ -3,6 +3,12 @@ AAFC DINA loan-transaction implementation.
 
 See DINA loan-transaction [specification](https://github.com/DINA-Web/loan-transaction-specs).
 
+## Required
+
+* Java 17
+* Maven 3.8 (tested)
+* Docker 19+ (for running integration tests)
+
 ## To Run
 
 For testing purpose a [Docker Compose](https://docs.docker.com/compose/) example file is available in the `local` folder.
