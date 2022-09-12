@@ -32,7 +32,7 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
 
   @Test
   @SneakyThrows
-  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
+  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":SUPER_USER", username = USER_NAME)
   public void findManagedAttribute_whenNoFieldsAreSelected_manageAttributeReturnedWithAllFields() {
     TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
         .group(VALID_GROUP)
@@ -56,7 +56,7 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   }
 
   @Test
-  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
+  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":SUPER_USER", username = USER_NAME)
   public void create_WithAuthenticatedUser_SetsCreatedBy() {
     TransactionManagedAttributeDto ma = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
       .group(VALID_GROUP)
@@ -69,7 +69,7 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   }
 
   @Test
-  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":COLLECTION_MANAGER", username = USER_NAME)
+  @WithMockKeycloakUser(groupRole = VALID_GROUP + ":SUPER_USER", username = USER_NAME)
   public void update_WithIncorrectGroup_AccessDeniedException() {
     TransactionManagedAttributeDto ma = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
       .group(INVALID_GROUP)
