@@ -4,7 +4,8 @@
         <cpe>cpe:/a:pivotal_software:spring_security:5.4.5</cpe>
     </suppress>
     <suppress>
-        <notes>CVE about Keycloak Server</notes>
-        <cve>CVE-2021-4133</cve>
+        <notes>not valid for loan-transaction-api</notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
     </suppress>
 </suppressions>
