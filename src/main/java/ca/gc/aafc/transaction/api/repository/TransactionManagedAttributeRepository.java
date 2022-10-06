@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +31,8 @@ public class TransactionManagedAttributeRepository
     @NonNull TransactionManagedAttributeService dinaService,
     @NonNull TransactionManagedAttributeAuthorizationService authorizationService,
     Optional<DinaAuthenticatedUser> dinaAuthenticatedUser,
-    @NonNull BuildProperties props
+    @NonNull BuildProperties props,
+    @NonNull ObjectMapper objMapper
   ) {
     super(
       dinaService,
@@ -41,7 +43,7 @@ public class TransactionManagedAttributeRepository
       TransactionManagedAttribute.class, 
       null, 
       null,
-      props);
+      props, objMapper);
     this.dinaAuthenticatedUser = dinaAuthenticatedUser;
     this.dinaService = dinaService;
   }
