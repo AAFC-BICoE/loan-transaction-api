@@ -2,6 +2,7 @@ package ca.gc.aafc.transaction.api.repository;
 
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +29,8 @@ public class TransactionRepository extends DinaRepository<TransactionDto, Transa
     Optional<DinaAuthenticatedUser> dinaAuthenticatedUser,
     @NonNull BuildProperties props,
     @NonNull AuditService auditService,
-    @NonNull ExternalResourceProvider externalResourceProvider
+    @NonNull ExternalResourceProvider externalResourceProvider,
+    @NonNull ObjectMapper objMapper
   ) {
     super(
       dinaService,
@@ -39,7 +41,7 @@ public class TransactionRepository extends DinaRepository<TransactionDto, Transa
         Transaction.class,
       null,
       externalResourceProvider,
-      props);
+      props, objMapper);
     this.dinaAuthenticatedUser = dinaAuthenticatedUser;
   }
 
