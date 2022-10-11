@@ -25,7 +25,7 @@
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
     <checkstyle.version>8.45.1</checkstyle.version>
-    <dina-base-api.version>0.94</dina-base-api.version>
+    <dina-base-api.version>0.95</dina-base-api.version>
     <postgresql.version>42.4.1</postgresql.version>
     <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
 
