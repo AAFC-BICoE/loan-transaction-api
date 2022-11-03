@@ -116,8 +116,7 @@ public class Transaction implements DinaEntity {
   // IgnoreDinaMapping annotation is not respected when using external relationships.
   @Transient
   private List<UUID> involvedAgents;
-
-  @Transient
+  
   private List<UUID> materialSamples;
 
   @Type(type = "jsonb")
