@@ -1,6 +1,8 @@
 package ca.gc.aafc.transaction.api.entities;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
@@ -25,15 +27,20 @@ public class TransactionCrudIT extends BaseIntegrationTest {
 
     Transaction newTransaction = TransactionFactory.newTransaction()
         .managedAttributes(Map.of(newTransactionManagedAttribute.getKey(), "anything"))
+        .materialSamples(List.of(UUID.randomUUID()))
         .build();
     assertNull(newTransaction.getId());
     transactionService.createAndFlush(newTransaction);
+    // detach to force reload from the database
+    transactionService.detach(newTransaction);
 
-    assertNotNull(newTransaction.getId());
-    assertNotNull(newTransaction.getMaterialToBeReturned());
+    Transaction t = transactionService.findOne(newTransaction.getUuid(), Transaction.class);
+    assertNotNull(t.getId());
+    assertNotNull(t.getMaterialToBeReturned());
+    assertNotNull(t.getMaterialSamples());
 
     //cleanup
-    transactionService.delete(newTransaction);
+    transactionService.delete(t);
     transactionService.flush();
 
     managedAttributeService.delete(newTransactionManagedAttribute);
