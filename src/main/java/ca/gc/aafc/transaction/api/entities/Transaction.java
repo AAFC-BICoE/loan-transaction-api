@@ -110,14 +110,15 @@ public class Transaction implements DinaEntity {
   @Type(type = "jsonb")
   @Valid
   @Builder.Default
-  private List<AgentRoles> agentRoles = new ArrayList<>();
+  private List<AgentRoles> agentRoles = List.of();
 
   // This field is mapped to the dto, but NOT stored in the database.
   // IgnoreDinaMapping annotation is not respected when using external relationships.
   @Transient
   private List<UUID> involvedAgents;
-  
-  private List<UUID> materialSamples;
+
+  @Type(type = "list-array")
+  private List<UUID> materialSamples = List.of();
 
   @Type(type = "jsonb")
   @NotNull
@@ -127,7 +128,7 @@ public class Transaction implements DinaEntity {
   @Type(type = "list-array")
   @Column(name = "attachment", columnDefinition = "uuid[]")
   @Builder.Default
-  private List<UUID> attachment = new ArrayList<>();
+  private List<UUID> attachment = List.of();
 
   @Column(name = "created_by")
   private String createdBy;
