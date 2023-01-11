@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
-import ca.gc.aafc.dina.entity.ManagedAttribute.ManagedAttributeType;
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
+import ca.gc.aafc.dina.vocabulary.TypedVocabularyElement;
 import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
 
 public class TransactionManagedAttributeFactory implements TestableEntityFactory<TransactionManagedAttribute> {
@@ -28,7 +28,7 @@ public class TransactionManagedAttributeFactory implements TestableEntityFactory
         .name(TestableEntityFactory.generateRandomNameLettersOnly(12))
         .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
         .createdBy("createdBy")
-        .managedAttributeType(ManagedAttributeType.STRING);
+        .vocabularyElementType(TypedVocabularyElement.VocabularyElementType.STRING);
    }
 
   /**

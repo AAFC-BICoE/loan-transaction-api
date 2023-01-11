@@ -3,11 +3,11 @@ package ca.gc.aafc.transaction.api.repository;
 import java.util.UUID;
 import javax.inject.Inject;
 
+import ca.gc.aafc.dina.vocabulary.TypedVocabularyElement;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 
-import ca.gc.aafc.dina.entity.ManagedAttribute.ManagedAttributeType;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
@@ -37,7 +37,7 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
     TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
         .group(VALID_GROUP)
         .acceptedValues(new String[] { "dosal" })
-        .managedAttributeType(ManagedAttributeType.STRING)
+        .vocabularyElementType(TypedVocabularyElement.VocabularyElementType.STRING)
         .build();
     UUID managedResourceUUID = managedResourceRepository.create(testManagedAttribute).getUuid();
 
@@ -48,8 +48,8 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
     assertEquals(managedResourceUUID, managedAttributeDto.getUuid());
     assertArrayEquals(testManagedAttribute.getAcceptedValues(),
         managedAttributeDto.getAcceptedValues());
-    assertEquals(testManagedAttribute.getManagedAttributeType(),
-        managedAttributeDto.getManagedAttributeType());
+    assertEquals(testManagedAttribute.getVocabularyElementType(),
+        managedAttributeDto.getVocabularyElementType());
     assertEquals(testManagedAttribute.getName(), managedAttributeDto.getName());
     assertEquals(testManagedAttribute.getMultilingualDescription().getDescriptions().get(0),
         managedAttributeDto.getMultilingualDescription().getDescriptions().get(0));
@@ -73,7 +73,7 @@ public class TransactionManagedAttributeRepositoryIT extends BaseIntegrationTest
   public void update_WithIncorrectGroup_AccessDeniedException() {
     TransactionManagedAttributeDto ma = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
       .group(INVALID_GROUP)
-      .managedAttributeType(ManagedAttributeType.STRING)
+      .vocabularyElementType(TypedVocabularyElement.VocabularyElementType.STRING)
       .acceptedValues(new String[] { "dosal" })
       .build();
 
