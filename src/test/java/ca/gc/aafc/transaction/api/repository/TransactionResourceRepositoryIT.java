@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.validation.ValidationException;
 
 import ca.gc.aafc.dina.entity.ManagedAttribute;
+import ca.gc.aafc.dina.vocabulary.TypedVocabularyElement;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
 import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttributeFixture;
 import org.junit.jupiter.api.Assertions;
@@ -88,7 +89,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
     // Create the managed attribute for bool
     TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
         .group(TransactionFixture.GROUP)
-        .managedAttributeType(ManagedAttribute.ManagedAttributeType.BOOL)
+        .vocabularyElementType(TypedVocabularyElement.VocabularyElementType.BOOL)
         .build();
     String key = managedResourceRepository.create(testManagedAttribute).getKey();
 

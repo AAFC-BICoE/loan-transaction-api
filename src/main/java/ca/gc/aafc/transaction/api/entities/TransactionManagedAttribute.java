@@ -2,6 +2,7 @@ package ca.gc.aafc.transaction.api.entities;
 
 import ca.gc.aafc.dina.entity.ManagedAttribute;
 import ca.gc.aafc.dina.i18n.MultilingualDescription;
+import ca.gc.aafc.dina.i18n.MultilingualTitle;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
@@ -61,7 +62,7 @@ public class TransactionManagedAttribute implements ManagedAttribute {
   @Type(type = "pgsql_enum")
   @Enumerated(EnumType.STRING)
   @Column(name = "type")
-  private ManagedAttributeType managedAttributeType;
+  private VocabularyElementType vocabularyElementType;
 
   @Type(type = "string-array")
   @Column(columnDefinition = "text[]")
@@ -88,4 +89,13 @@ public class TransactionManagedAttribute implements ManagedAttribute {
   @Column(updatable = false)
   private String key;
 
+  @Override
+  public String getTerm() {
+    return null;
+  }
+
+  @Override
+  public MultilingualTitle getMultilingualTitle() {
+    return null;
+  }
 }
