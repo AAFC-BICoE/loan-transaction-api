@@ -3,9 +3,8 @@ package ca.gc.aafc.transaction.api.entities;
 import ca.gc.aafc.dina.entity.ManagedAttribute;
 import ca.gc.aafc.dina.i18n.MultilingualDescription;
 import ca.gc.aafc.dina.i18n.MultilingualTitle;
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +15,6 @@ import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,9 +30,6 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity(name = "managed_attribute")
-@TypeDefs({@TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class),
-  @TypeDef(name = "string-array", typeClass = StringArrayType.class),
-  @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @AllArgsConstructor
 @Getter
 @Setter
@@ -91,6 +85,13 @@ public class TransactionManagedAttribute implements ManagedAttribute {
 
   @Override
   public String getTerm() {
+    return null;
+  }
+
+  // not implemented for now
+  @Transient
+  @Override
+  public String getUnit() {
     return null;
   }
 
