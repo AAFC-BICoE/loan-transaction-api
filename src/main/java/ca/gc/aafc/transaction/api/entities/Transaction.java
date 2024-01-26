@@ -25,11 +25,6 @@ import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-
-import com.vladmihalcea.hibernate.type.array.ListArrayType;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
@@ -49,9 +44,6 @@ import lombok.ToString;
 @ToString
 @Builder
 @NaturalIdCache
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-@TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
-@TypeDef(name = "list-array", typeClass = ListArrayType.class)
 public class Transaction implements DinaEntity {
 
   public enum Direction { IN, OUT }
