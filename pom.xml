@@ -23,8 +23,11 @@
     <jcip-annotations.version>1.0</jcip-annotations.version>
     <dependency.check.version>7.1.2</dependency.check.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+
     <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
     <checkstyle.version>8.45.1</checkstyle.version>
+    <checkstyle-antlr.version>4.9.3</checkstyle-antlr.version>
+
     <dina-base-api.version>0.124</dina-base-api.version>
     <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
 
@@ -181,6 +184,11 @@
             <version>${checkstyle.version}</version>
           </dependency>
         </dependencies>
+        <dependency>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-runtime</artifactId>
+          <version>${checkstyle-antlr.version}</version>
+        </dependency>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
           <failOnViolation>true</failOnViolation>
