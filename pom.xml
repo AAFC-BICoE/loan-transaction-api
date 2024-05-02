@@ -183,12 +183,12 @@
             <artifactId>checkstyle</artifactId>
             <version>${checkstyle.version}</version>
           </dependency>
+          <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${checkstyle-antlr.version}</version>
+          </dependency>
         </dependencies>
-        <dependency>
-          <groupId>org.antlr</groupId>
-          <artifactId>antlr4-runtime</artifactId>
-          <version>${checkstyle-antlr.version}</version>
-        </dependency>
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
           <failOnViolation>true</failOnViolation>
