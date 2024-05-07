@@ -22,7 +22,7 @@ public class SearchRabbitMQMessageProducer extends RabbitMQMessageProducer imple
 
   @Autowired
   public SearchRabbitMQMessageProducer(RabbitTemplate rabbitTemplate, @Named("searchQueueProperties")
-  RabbitMQQueueProperties queueProperties) {
+      RabbitMQQueueProperties queueProperties) {
     super(rabbitTemplate, queueProperties);
   }
 
