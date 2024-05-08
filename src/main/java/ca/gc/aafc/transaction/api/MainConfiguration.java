@@ -10,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import ca.gc.aafc.dina.DinaBaseApiAutoConfiguration;
-import ca.gc.aafc.dina.search.messaging.producer.LogBasedMessageProducer;
-import ca.gc.aafc.dina.search.messaging.producer.MessageProducer;
+import ca.gc.aafc.dina.messaging.producer.DocumentOperationNotificationMessageProducer;
+import ca.gc.aafc.dina.messaging.producer.LogBasedMessageProducer;
 import ca.gc.aafc.dina.service.JaversDataService;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
 import ca.gc.aafc.transaction.api.util.ManagedAttributeIdMapper;
@@ -41,7 +41,7 @@ public class MainConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "dina.messaging.isProducer", havingValue = "false")
-    public MessageProducer init() {
+    public DocumentOperationNotificationMessageProducer init() {
       return new LogBasedMessageProducer();
     }
   }
