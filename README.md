@@ -5,7 +5,7 @@ See DINA loan-transaction [specification](https://github.com/DINA-Web/loan-trans
 
 ## Required
 
-* Java 17
+* Java 21
 * Maven 3.8 (tested)
 * Docker 19+ (for running integration tests)
 
