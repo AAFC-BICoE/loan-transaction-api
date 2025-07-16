@@ -1,32 +1,32 @@
 package ca.gc.aafc.transaction.api.repository;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.transaction.annotation.Transactional;
+
+import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
+import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
+import ca.gc.aafc.dina.vocabulary.TypedVocabularyElement;
+import ca.gc.aafc.transaction.api.BaseIntegrationTest;
+import ca.gc.aafc.transaction.api.dto.TransactionDto;
+import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
+import ca.gc.aafc.transaction.api.entities.AgentRoles;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
+import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttributeFixture;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import io.crnk.core.queryspec.QuerySpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.validation.ValidationException;
-
-import ca.gc.aafc.dina.entity.ManagedAttribute;
-import ca.gc.aafc.dina.vocabulary.TypedVocabularyElement;
-import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
-import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttributeFixture;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.access.AccessDeniedException;
-
-import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
-import ca.gc.aafc.transaction.api.BaseIntegrationTest;
-import ca.gc.aafc.transaction.api.dto.TransactionDto;
-import ca.gc.aafc.transaction.api.entities.AgentRoles;
-import ca.gc.aafc.transaction.api.testsupport.fixtures.ShipmentTestFixture;
-import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionFixture;
-
-import io.crnk.core.queryspec.QuerySpec;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(properties = "keycloak.enabled: true")
 public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
@@ -85,13 +85,16 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":SUPER_USER")
+  @Transactional
   public void create_onManagedAttributeValue_validationOccur() {
     // Create the managed attribute for bool
     TransactionManagedAttributeDto testManagedAttribute = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
         .group(TransactionFixture.GROUP)
         .vocabularyElementType(TypedVocabularyElement.VocabularyElementType.BOOL)
         .build();
-    String key = managedResourceRepository.create(testManagedAttribute).getKey();
+
+    JsonApiDocument docToCreate =TransactionModuleBaseRepositoryIT.dtoToJsonApiDocument(testManagedAttribute);
+    String key = managedResourceRepository.create(docToCreate, null).getDto().getKey();
 
     TransactionDto transactionDto = TransactionFixture.newTransaction()
         .managedAttributes( Map.of(key, "xyz"))
