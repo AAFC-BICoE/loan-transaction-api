@@ -2,9 +2,10 @@ package ca.gc.aafc.transaction.api.service;
 
 import java.util.UUID;
 
+import ca.gc.aafc.dina.messaging.DinaEventPublisher;
+import ca.gc.aafc.dina.messaging.EntityChanged;
 import ca.gc.aafc.dina.service.MessageProducingService;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.SmartValidator;
 
@@ -26,7 +27,7 @@ public class TransactionService extends MessageProducingService<Transaction> {
     @NonNull SmartValidator smartValidator,
     @NonNull TransactionValidator transactionValidator,
     @NonNull TransactionManagedAttributeValueValidator transactionManagedAttributeValueValidator,
-    ApplicationEventPublisher eventPublisher
+    DinaEventPublisher<EntityChanged> eventPublisher
   ) {
     super(baseDAO, smartValidator, TransactionDto.TYPENAME, eventPublisher);
     this.transactionValidator = transactionValidator;

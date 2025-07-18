@@ -1,30 +1,52 @@
 package ca.gc.aafc.transaction.api.repository;
 
-import java.io.Serializable;
-import java.util.Optional;
-import java.util.UUID;
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.boot.info.BuildProperties;
-import org.springframework.stereotype.Repository;
 
-import ca.gc.aafc.dina.mapper.DinaMapper;
-import ca.gc.aafc.dina.repository.DinaRepository;
+import ca.gc.aafc.dina.exception.ResourceGoneException;
+import ca.gc.aafc.dina.exception.ResourceNotFoundException;
+import ca.gc.aafc.dina.exception.ResourcesGoneException;
+import ca.gc.aafc.dina.exception.ResourcesNotFoundException;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkDocument;
+import ca.gc.aafc.dina.jsonapi.JsonApiBulkResourceIdentifierDocument;
+import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
+import ca.gc.aafc.dina.repository.DinaRepositoryV2;
 import ca.gc.aafc.dina.security.DinaAuthenticatedUser;
+import ca.gc.aafc.dina.security.TextHtmlSanitizer;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
 import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
+import ca.gc.aafc.transaction.api.mapper.TransactionManagedAttributeMapper;
 import ca.gc.aafc.transaction.api.security.TransactionManagedAttributeAuthorizationService;
 import ca.gc.aafc.transaction.api.service.TransactionManagedAttributeService;
 
-import io.crnk.core.exception.ResourceNotFoundException;
-import io.crnk.core.queryspec.QuerySpec;
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Optional;
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import lombok.NonNull;
 
-@Repository
+@RestController
+@RequestMapping(value = "${dina.apiPrefix:}", produces = JSON_API_VALUE)
 public class TransactionManagedAttributeRepository
-  extends DinaRepository<TransactionManagedAttributeDto, TransactionManagedAttribute> {
+  extends DinaRepositoryV2<TransactionManagedAttributeDto, TransactionManagedAttribute> {
 
-  private final Optional<DinaAuthenticatedUser> dinaAuthenticatedUser;
+  private final DinaAuthenticatedUser dinaAuthenticatedUser;
   private final TransactionManagedAttributeService dinaService;
 
   public TransactionManagedAttributeRepository(
@@ -38,45 +60,110 @@ public class TransactionManagedAttributeRepository
       dinaService,
       authorizationService,
       Optional.empty(),
-      new DinaMapper<>(TransactionManagedAttributeDto.class),
+      TransactionManagedAttributeMapper.INSTANCE,
       TransactionManagedAttributeDto.class,
-      TransactionManagedAttribute.class, 
-      null, 
-      null,
+      TransactionManagedAttribute.class,
       props, objMapper);
-    this.dinaAuthenticatedUser = dinaAuthenticatedUser;
+    this.dinaAuthenticatedUser = dinaAuthenticatedUser.orElse(null);
     this.dinaService = dinaService;
   }
 
   @Override
-  public <S extends TransactionManagedAttributeDto> S create(S resource) {
-    dinaAuthenticatedUser.ifPresent(user -> resource.setCreatedBy(user.getUsername()));
-    return super.create(resource);
+  protected Link generateLinkToResource(TransactionManagedAttributeDto dto) {
+    try {
+      return linkTo(methodOn(TransactionManagedAttributeRepository.class).onFindOne(dto.getUuid().toString(), null)).withSelfRel();
+    } catch (ResourceNotFoundException | ResourceGoneException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  @Override
-  public TransactionManagedAttributeDto findOne(Serializable id, QuerySpec querySpec) {
+  @GetMapping(TransactionManagedAttributeDto.TYPENAME + "/{id}")
+  public ResponseEntity<RepresentationModel<?>> onFindOne(@PathVariable String id, HttpServletRequest req)
+      throws ResourceNotFoundException, ResourceGoneException {
+
     boolean idIsUuid = true;
     try {
-      UUID.fromString(id.toString());
+      UUID.fromString(id);
     } catch (IllegalArgumentException exception) {
       idIsUuid = false;
     }
-    
-    // Try finding by UUID:
+
+    // Try use UUID
     if (idIsUuid) {
-      return super.findOne(id, querySpec);
+      return handleFindOne(UUID.fromString(id), req);
     }
 
-    // Otherwise try a lookup by the managed attribute key.
-    // e.g. GET /api/v1/managed-attribute/test-managed-attribute
-    TransactionManagedAttribute managedAttribute = dinaService.findOneByKey(id.toString());
-
+    TransactionManagedAttribute managedAttribute = dinaService.findOneByKey(id);
     if (managedAttribute != null) {
-      return getMappingLayer().toDtoSimpleMapping(managedAttribute);
+      return handleFindOne(managedAttribute.getUuid(), req);
     } else {
-      throw new ResourceNotFoundException("Managed Attribute not found: " + id);
+      throw ResourceNotFoundException.create(TransactionManagedAttributeDto.TYPENAME,
+        TextHtmlSanitizer.sanitizeText(id));
     }
+  }
+
+  @PostMapping(path = TransactionManagedAttributeDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_LOAD_PATH,
+    consumes = JSON_API_BULK)
+  public ResponseEntity<RepresentationModel<?>> onBulkLoad(@RequestBody
+                                                           JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument,
+                                                           HttpServletRequest req)
+      throws ResourcesNotFoundException, ResourcesGoneException {
+    return handleBulkLoad(jsonApiBulkDocument, req);
+  }
+
+  @GetMapping(TransactionManagedAttributeDto.TYPENAME)
+  public ResponseEntity<RepresentationModel<?>> onFindAll(HttpServletRequest req) {
+    return handleFindAll(req);
+  }
+
+  @PostMapping(path = TransactionManagedAttributeDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkCreate(@RequestBody
+                                                             JsonApiBulkDocument jsonApiBulkDocument) {
+    return handleBulkCreate(jsonApiBulkDocument, dto -> {
+      if (dinaAuthenticatedUser != null) {
+        dto.setCreatedBy(dinaAuthenticatedUser.getUsername());
+      }
+    });
+  }
+
+  @PostMapping(TransactionManagedAttributeDto.TYPENAME)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onCreate(@RequestBody JsonApiDocument postedDocument) {
+
+    return handleCreate(postedDocument, dto -> {
+      if (dinaAuthenticatedUser != null) {
+        dto.setCreatedBy(dinaAuthenticatedUser.getUsername());
+      }
+    });
+  }
+
+  @PatchMapping(path = TransactionManagedAttributeDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkUpdate(@RequestBody JsonApiBulkDocument jsonApiBulkDocument)
+      throws ResourceNotFoundException, ResourceGoneException {
+    return handleBulkUpdate(jsonApiBulkDocument);
+  }
+
+  @PatchMapping(TransactionManagedAttributeDto.TYPENAME + "/{id}")
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onUpdate(@RequestBody JsonApiDocument partialPatchDto,
+                                                         @PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
+    return handleUpdate(partialPatchDto, id);
+  }
+
+  @DeleteMapping(path = TransactionManagedAttributeDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_PATH, consumes = JSON_API_BULK)
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onBulkDelete(@RequestBody
+                                                               JsonApiBulkResourceIdentifierDocument jsonApiBulkDocument)
+      throws ResourceNotFoundException, ResourceGoneException {
+    return handleBulkDelete(jsonApiBulkDocument);
+  }
+
+  @DeleteMapping(TransactionManagedAttributeDto.TYPENAME + "/{id}")
+  @Transactional
+  public ResponseEntity<RepresentationModel<?>> onDelete(@PathVariable UUID id) throws ResourceNotFoundException, ResourceGoneException {
+    return handleDelete(id);
   }
 
 }
