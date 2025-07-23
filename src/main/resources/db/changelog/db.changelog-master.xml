@@ -9,6 +9,6 @@
   <include file="db/changelog/migrations/4-Add_attachment_to_transaction.xml"/>
   <include file="db/changelog/migrations/5-Add_bool_to_managed_attribute.xml"/>
   <include file="db/changelog/migrations/6-Add_Material_Samples_to_Transaction.xml"/>
-
+  <include file="db/changelog/migrations/7-Add_decimal_to_managed_attribute.xml"/>
 
 </databaseChangeLog>

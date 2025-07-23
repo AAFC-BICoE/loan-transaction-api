@@ -1,12 +1,15 @@
-package ca.gc.aafc.transaction.api.crud;
+package ca.gc.aafc.transaction.api.service;
 
 import java.util.List;
 import java.util.UUID;
+import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 
 import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.dina.i18n.MultilingualDescription;
+import ca.gc.aafc.dina.vocabulary.TypedVocabularyElement;
+import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
 import ca.gc.aafc.transaction.api.testsupport.factories.MultilingualDescriptionFactory;
 import ca.gc.aafc.transaction.api.testsupport.factories.TransactionManagedAttributeFactory;
@@ -17,20 +20,33 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TransactionManagedAttributeCRUDIT extends BaseEntityCRUDIT {
-     
-  private final TransactionManagedAttribute managedAttributeUnderTest = TransactionManagedAttributeFactory.newManagedAttribute()
+@Transactional
+public class TransactionManagedAttributeCRUDIT extends BaseIntegrationTest {
+
+  private TransactionManagedAttribute buildTransactionManagedAttribute() {
+    return TransactionManagedAttributeFactory.newManagedAttribute()
       .group("group")
       .acceptedValues(new String[] { "a", "b" })
       .multilingualDescription(MultilingualDescriptionFactory.newMultilingualDescription().build())
       .createdBy("createdBy")
       .build();
+  }
       
-  @Override
+  @Test
   public void testSave() {
+    TransactionManagedAttribute managedAttributeUnderTest = buildTransactionManagedAttribute();
     assertNull(managedAttributeUnderTest.getId());
     managedAttributeService.create(managedAttributeUnderTest);
     assertNotNull(managedAttributeUnderTest.getId());
+  }
+
+  @Test
+  public void testSaveAllTypes() {
+    for(var type : TypedVocabularyElement.VocabularyElementType.values()) {
+      managedAttributeService.create(TransactionManagedAttributeFactory.newManagedAttribute()
+        .vocabularyElementType(type)
+        .build());
+    }
   }
 
   @Test
@@ -61,8 +77,11 @@ public class TransactionManagedAttributeCRUDIT extends BaseEntityCRUDIT {
       () -> managedAttributeService.create(nullDescription));
   }
 
-  @Override
+  @Test
   public void testFind() {
+    TransactionManagedAttribute managedAttributeUnderTest = buildTransactionManagedAttribute();
+    managedAttributeService.create(managedAttributeUnderTest);
+
     TransactionManagedAttribute fetchedManagedAttribute = managedAttributeService.findOne(
       managedAttributeUnderTest.getUuid(), TransactionManagedAttribute.class);
     assertEquals(managedAttributeUnderTest.getId(), fetchedManagedAttribute.getId());
@@ -76,6 +95,9 @@ public class TransactionManagedAttributeCRUDIT extends BaseEntityCRUDIT {
 
   @Test
   public void testRemove() {
+    TransactionManagedAttribute managedAttributeUnderTest = buildTransactionManagedAttribute();
+    managedAttributeService.create(managedAttributeUnderTest);
+
     UUID uuid = managedAttributeUnderTest.getUuid();
     managedAttributeService.delete(managedAttributeUnderTest);
     assertNull(managedAttributeService.findOne(
