@@ -48,7 +48,9 @@ javers:
   
 # Wait for requests to finish before shutting down:
 server.shutdown: graceful
-dina.auditing.enabled: true
+dina:
+  auditing.enabled: true
+  apiPrefix: /api/v1
 
 rabbitmq:
   queue: dina.search.queue
