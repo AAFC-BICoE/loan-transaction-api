@@ -3,7 +3,7 @@
 
   <groupId>ca.gc.aafc</groupId>
   <artifactId>loan-transaction-api</artifactId>
-  <version>0.12-SNAPSHOT</version>
+  <version>0.12</version>
   <packaging>jar</packaging>
 
   <name>loan-transaction API</name>
@@ -32,7 +32,7 @@
     <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
     <checkstyle.version>10.17.0</checkstyle.version>
 
-    <dina-base-api.version>0.147</dina-base-api.version>
+    <dina-base-api.version>0.149</dina-base-api.version>
     <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
 
     <spring-framework.version>5.3.38</spring-framework.version>
