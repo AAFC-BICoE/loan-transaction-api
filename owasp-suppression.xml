@@ -25,6 +25,18 @@
         <cve>CVE-2024-22262</cve>
     </suppress>
     <suppress>
+        <notes>Not applicable</notes>
+        <cve>CVE-2024-38816</cve>
+    </suppress>
+    <suppress>
+        <notes>No WebFlux</notes>
+        <cve>CVE-2024-38821</cve>
+    </suppress>
+    <suppress>
+        <notes>Not applicable</notes>
+        <cve>CVE-2025-22228</cve>
+    </suppress>
+    <suppress>
         <notes>Keycloak Server related</notes>
         <cve>CVE-2023-6787</cve>
     </suppress>
