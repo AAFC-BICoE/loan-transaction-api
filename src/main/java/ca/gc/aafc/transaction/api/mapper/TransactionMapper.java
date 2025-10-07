@@ -11,10 +11,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import ca.gc.aafc.dina.mapper.DinaMapperV2;
+import ca.gc.aafc.dina.mapper.MapperStaticConverter;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
 import ca.gc.aafc.transaction.api.entities.Transaction;
 
-@Mapper
+@Mapper(imports = MapperStaticConverter.class)
 public interface TransactionMapper extends DinaMapperV2<TransactionDto, Transaction>{
     
     TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);

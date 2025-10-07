@@ -6,7 +6,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.gc.aafc.dina.exception.ResourceGoneException;
+import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
+import ca.gc.aafc.dina.jsonapi.JsonApiDocuments;
+import ca.gc.aafc.dina.repository.JsonApiModelAssistant;
+import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.security.WithMockKeycloakUser;
 import ca.gc.aafc.dina.vocabulary.TypedVocabularyElement;
 import ca.gc.aafc.transaction.api.BaseIntegrationTest;
@@ -20,7 +25,6 @@ import ca.gc.aafc.transaction.api.testsupport.fixtures.TransactionManagedAttribu
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import io.crnk.core.queryspec.QuerySpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +43,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
 
   @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":USER")
   @Test
-  public void create_onValidData_transactionPersisted() {
+  public void create_onValidData_transactionPersisted() throws ResourceNotFoundException, ResourceGoneException {
     TransactionDto transactionDto = TransactionFixture
         .newTransaction()
         .shipment(ShipmentTestFixture.newShipment().build())
@@ -55,32 +59,39 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
         )))
         .build();
 
-    TransactionDto createdTransaction = transactionRepository.create(transactionDto);
-    assertNotNull(createdTransaction.getCreatedOn());
+    JsonApiDocument transactionToCreate = JsonApiDocuments.createJsonApiDocument(
+      null, TransactionDto.TYPENAME, JsonAPITestHelper.toAttributeMap(transactionDto));
 
-    TransactionDto result = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
-    assertEquals(createdTransaction.getUuid(), result.getUuid());
-    assertEquals("user", result.getCreatedBy());
+    UUID transactionId = JsonApiModelAssistant.extractUUIDFromRepresentationModelLink(
+      transactionRepository.onCreate(transactionToCreate));
+
+    TransactionDto createdTransaction = transactionRepository.getOne(transactionId, null).getDto();
+    
+    assertEquals(transactionId, createdTransaction.getUuid());
+    assertNotNull(createdTransaction.getCreatedOn());
+    assertEquals("user", createdTransaction.getCreatedBy());
 
     // Test roles.
-    assertEquals(2, result.getInvolvedAgents().size());
-    assertEquals("Role1", result.getAgentRoles().get(0).getRoles().get(0));
-    assertEquals("Role2", result.getAgentRoles().get(0).getRoles().get(1));
-    assertEquals("Role3", result.getAgentRoles().get(1).getRoles().get(0));
+    assertEquals(2, createdTransaction.getInvolvedAgents().size());
+    assertEquals("Role1", createdTransaction.getAgentRoles().get(0).getRoles().get(0));
+    assertEquals("Role2", createdTransaction.getAgentRoles().get(0).getRoles().get(1));
+    assertEquals("Role3", createdTransaction.getAgentRoles().get(1).getRoles().get(0));
 
-    assertEquals(ShipmentTestFixture.CURRENCY, result.getShipment().getCurrency());
+    assertEquals(ShipmentTestFixture.CURRENCY, createdTransaction.getShipment().getCurrency());
 
     // cleanup
-    transactionRepository.delete(createdTransaction.getUuid());
+    transactionRepository.delete(transactionId);
   }
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = "wronggroup:USER")
   public void create_onWrongGroup_accessDenied() {
     TransactionDto transactionDto = TransactionFixture.newTransaction().build();
+    JsonApiDocument transactionToCreate = JsonApiDocuments.createJsonApiDocument(
+      null, TransactionDto.TYPENAME, JsonAPITestHelper.toAttributeMap(transactionDto));
     Assertions
         .assertThrows(AccessDeniedException.class,
-            () -> transactionRepository.create(transactionDto));
+            () -> transactionRepository.onCreate(transactionToCreate));
   }
 
   @Test
@@ -99,21 +110,29 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto transactionDto = TransactionFixture.newTransaction()
         .managedAttributes( Map.of(key, "xyz"))
         .build();
+    JsonApiDocument transactionToCreate = JsonApiDocuments.createJsonApiDocument(
+      null, TransactionDto.TYPENAME, JsonAPITestHelper.toAttributeMap(transactionDto));
     Assertions
         .assertThrows(ValidationException.class,
-            () -> transactionRepository.create(transactionDto));
+            () -> transactionRepository.onCreate(transactionToCreate));
 
     // fix the error and retry
     transactionDto.setManagedAttributes(Map.of(key, "true"));
-    transactionRepository.create(transactionDto);
+    JsonApiDocument fixedTransactionToCreate = JsonApiDocuments.createJsonApiDocument(
+      null, TransactionDto.TYPENAME, JsonAPITestHelper.toAttributeMap(transactionDto));
+    transactionRepository.onCreate(fixedTransactionToCreate);
   }
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":SUPER_USER")
-  public void save_onUpdateData_FieldsUpdated() {
+  public void save_onUpdateData_FieldsUpdated() throws ResourceNotFoundException, ResourceGoneException {
     final String updatedTransactionNumber = "Updated T2";
     TransactionDto transactionDto = TransactionFixture.newTransaction().build();
-    TransactionDto createdTransaction = transactionRepository.create(transactionDto);
+    JsonApiDocument transactionToCreate = JsonApiDocuments.createJsonApiDocument(
+      null, TransactionDto.TYPENAME, JsonAPITestHelper.toAttributeMap(transactionDto));
+    UUID transactionId = JsonApiModelAssistant.extractUUIDFromRepresentationModelLink(
+      transactionRepository.onCreate(transactionToCreate));
+    TransactionDto createdTransaction = transactionRepository.getOne(transactionId, null).getDto();
 
     List<AgentRoles> agentRoleUpdate = createdTransaction.getAgentRoles();
     agentRoleUpdate.get(0).setRoles(new ArrayList<>(List.of("updatedRole")));
@@ -121,14 +140,16 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
     createdTransaction.setTransactionNumber(updatedTransactionNumber);
     createdTransaction.setAgentRoles(agentRoleUpdate);
 
-    transactionRepository.save(createdTransaction);
+    JsonApiDocument transactionToUpdate = JsonApiDocuments.createJsonApiDocument(
+      transactionId, TransactionDto.TYPENAME, JsonAPITestHelper.toAttributeMap(createdTransaction));
+    transactionRepository.onUpdate(transactionToUpdate, transactionId);
 
-    TransactionDto loadedTransaction = transactionRepository.findOne(createdTransaction.getUuid(), new QuerySpec(TransactionDto.class));
+    TransactionDto loadedTransaction = transactionRepository.getOne(transactionId, null).getDto();
     assertEquals(updatedTransactionNumber, loadedTransaction.getTransactionNumber());
     assertEquals("updatedRole", loadedTransaction.getAgentRoles().get(0).getRoles().get(0));
 
     // cleanup
-    transactionRepository.delete(createdTransaction.getUuid());
+    transactionRepository.delete(transactionId);
   }
 
 }
