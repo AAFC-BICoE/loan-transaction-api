@@ -47,15 +47,15 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
     TransactionDto transactionDto = TransactionFixture
         .newTransaction()
         .shipment(ShipmentTestFixture.newShipment().build())
-        .agentRoles(new ArrayList<AgentRoles>(List.of(
+        .agentRoles(new ArrayList<>(List.of(
           AgentRoles.builder()
-              .agent(UUID.randomUUID())
-              .roles(new ArrayList<String>(List.of("Role1", "Role2")))
-              .build(),
+            .agent(UUID.randomUUID())
+            .roles(new ArrayList<>(List.of("Role1", "Role2")))
+            .build(),
           AgentRoles.builder()
-              .agent(UUID.randomUUID())
-              .roles(new ArrayList<String>(List.of("Role3")))
-              .build()
+            .agent(UUID.randomUUID())
+            .roles(new ArrayList<>(List.of("Role3")))
+            .build()
         )))
         .build();
 
@@ -80,7 +80,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals(ShipmentTestFixture.CURRENCY, createdTransaction.getShipment().getCurrency());
 
     // cleanup
-    transactionRepository.delete(transactionId);
+    transactionRepository.onDelete(transactionId);
   }
 
   @Test

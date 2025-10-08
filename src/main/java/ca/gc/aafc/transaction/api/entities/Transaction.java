@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -102,11 +101,6 @@ public class Transaction implements DinaEntity {
   @Valid
   @Builder.Default
   private List<AgentRoles> agentRoles = List.of();
-
-  // This field is mapped to the dto, but NOT stored in the database.
-  // IgnoreDinaMapping annotation is not respected when using external relationships.
-  @Transient
-  private List<UUID> involvedAgents;
 
   @Type(type = "list-array")
   private List<UUID> materialSamples = List.of();

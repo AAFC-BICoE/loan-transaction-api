@@ -8,12 +8,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.javers.core.metamodel.annotation.Id;
+import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
 import ca.gc.aafc.dina.dto.ExternalRelationDto;
 import ca.gc.aafc.dina.dto.JsonApiResource;
 import ca.gc.aafc.dina.dto.RelatedEntity;
 import ca.gc.aafc.dina.repository.meta.JsonApiExternalRelation;
+import ca.gc.aafc.transaction.api.dto.external.PersonExternalDto;
 import ca.gc.aafc.transaction.api.entities.AgentRoles;
 import ca.gc.aafc.transaction.api.entities.Shipment;
 import ca.gc.aafc.transaction.api.entities.Transaction;
@@ -38,9 +41,10 @@ import lombok.Setter;
 public class TransactionDto implements JsonApiResource {
 
   public static final String TYPENAME = "transaction";
-  public static final String EXTERNAL_AGENT = "person";
 
   @JsonApiId
+  @Id
+  @PropertyName("id")
   private UUID uuid;
 
   private String group;
@@ -64,10 +68,8 @@ public class TransactionDto implements JsonApiResource {
   @Builder.Default
   private List<AgentRoles> agentRoles = List.of();
 
-  // Field is mapped using the roles field. See getAgents().
-  // This field is mapped to the entity, but NOT stored in the database.
-  @JsonApiExternalRelation(type = EXTERNAL_AGENT)
-  private List<ExternalRelationDto> involvedAgents = List.of();
+  // Calculated field see getInvolvedAgents
+  private List<ExternalRelationDto> involvedAgents;
 
   @JsonApiExternalRelation(type = "material-sample")
   private List<ExternalRelationDto> materialSamples = List.of();
@@ -82,15 +84,16 @@ public class TransactionDto implements JsonApiResource {
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  public void setInvolvedAgents(List<ExternalRelationDto> fromEntity) {
+  public List<ExternalRelationDto> getInvolvedAgents() {
     if (CollectionUtils.isNotEmpty(agentRoles)) {
-      involvedAgents = agentRoles.stream()
-          .map(agent -> ExternalRelationDto.builder()
-              .id(agent.getAgent().toString())
-              .type(EXTERNAL_AGENT)
-              .build()
-          ).collect(Collectors.toList());      
+      return agentRoles.stream()
+        .map(agent -> ExternalRelationDto.builder()
+          .id(agent.getAgent().toString())
+          .type(PersonExternalDto.EXTERNAL_TYPENAME)
+          .build()
+        ).collect(Collectors.toList());
     }
+    return List.of();
   }
 
   @Override
