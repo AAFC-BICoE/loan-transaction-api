@@ -63,7 +63,6 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
             ),
             Map.of(
               "materialSamples", JsonAPITestHelper.generateExternalRelationList("material-sample", 1),
-              "involvedAgents", JsonAPITestHelper.generateExternalRelationList("person", 1),
               "attachment", JsonAPITestHelper.generateExternalRelationList("metadata", 1)
             ),
             null

@@ -71,12 +71,14 @@ public class TransactionDto implements JsonApiResource {
   // Calculated field see getInvolvedAgents
   private List<ExternalRelationDto> involvedAgents;
 
+  @JsonIgnore
   @JsonApiExternalRelation(type = "material-sample")
   private List<ExternalRelationDto> materialSamples = List.of();
 
   @Builder.Default
   private Map<String, String> managedAttributes = Map.of();
 
+  @JsonIgnore
   @JsonApiExternalRelation(type = "metadata")
   @Builder.Default
   private List<ExternalRelationDto> attachment = List.of();

@@ -149,7 +149,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
     assertEquals("updatedRole", loadedTransaction.getAgentRoles().get(0).getRoles().get(0));
 
     // cleanup
-    transactionRepository.delete(transactionId);
+    transactionRepository.onDelete(transactionId);
   }
 
 }
