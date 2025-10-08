@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.gc.aafc.dina.dto.ExternalRelationDto;
+import ca.gc.aafc.dina.dto.JsonApiExternalResource;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourcesGoneException;
 import ca.gc.aafc.dina.exception.ResourcesNotFoundException;
@@ -35,10 +38,13 @@ import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
 import ca.gc.aafc.transaction.api.entities.Transaction;
 import ca.gc.aafc.transaction.api.mapper.TransactionMapper;
+import ca.gc.aafc.transaction.api.mapper.ExternalRelationshipMapper;
 
 import lombok.NonNull;
 
 import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "${dina.apiPrefix:}", produces = JSON_API_VALUE)
@@ -64,6 +70,20 @@ public class TransactionRepository extends DinaRepositoryV2<TransactionDto, Tran
       Transaction.class,
       props, objMapper, new DinaMappingRegistry(TransactionDto.class, true));
     this.dinaAuthenticatedUser = dinaAuthenticatedUser.orElse(null);
+  }
+
+  @Override
+  protected Link generateLinkToResource(TransactionDto dto) {
+    try {
+      return linkTo(methodOn(TransactionRepository.class).onFindOne(dto.getUuid(), null)).withSelfRel();
+    } catch (ResourceNotFoundException | ResourceGoneException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  protected JsonApiExternalResource externalRelationDtoToJsonApiExternalResource(ExternalRelationDto externalRelationDto) {
+    return ExternalRelationshipMapper.externalRelationDtoToJsonApiExternalResource(externalRelationDto);
   }
 
   @PostMapping(path = TransactionDto.TYPENAME + "/" + DinaRepositoryV2.JSON_API_BULK_LOAD_PATH, consumes = JSON_API_BULK)

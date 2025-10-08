@@ -26,9 +26,15 @@ public interface TransactionMapper extends DinaMapperV2<TransactionDto, Transact
     TransactionDto toDto(Transaction entity, @Context Set<String> provided, @Context String scope);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "attachment", ignore = true)
+    @Mapping(target = "materialSamples", ignore = true)
+    @Mapping(target = "involvedAgents", ignore = true)
     Transaction toEntity(TransactionDto dto, @Context Set<String> provided, @Context String scope);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "attachment", ignore = true)
+    @Mapping(target = "materialSamples", ignore = true)
+    @Mapping(target = "involvedAgents", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void patchEntity(@MappingTarget Transaction entity, TransactionDto dto, @Context Set<String> provided, @Context String scope);
 }
