@@ -16,7 +16,7 @@ import lombok.Getter;
 @Builder
 @Getter
 @JsonApiTypeForClass(MaterialSampleExternalDto.EXTERNAL_TYPENAME)
-public class MaterialSampleExternalDto implements JsonApiExternalResource{
+public class MaterialSampleExternalDto implements JsonApiExternalResource {
 
   public static final String EXTERNAL_TYPENAME = "material-sample";
 
