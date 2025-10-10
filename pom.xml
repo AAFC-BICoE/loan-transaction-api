@@ -3,7 +3,7 @@
 
   <groupId>ca.gc.aafc</groupId>
   <artifactId>loan-transaction-api</artifactId>
-  <version>0.13-SNAPSHOT</version>
+  <version>0.14-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>loan-transaction API</name>
@@ -20,7 +20,7 @@
     <javax.interceptor-api>1.2.2</javax.interceptor-api>
 
     <jcip-annotations.version>1.0</jcip-annotations.version>
-    <dependency.check.version>12.1.3</dependency.check.version>
+    <dependency.check.version>12.1.6</dependency.check.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
     <org.mapstruct.version>1.6.3</org.mapstruct.version>
