@@ -91,7 +91,7 @@ public class Transaction implements DinaEntity {
 
   private LocalDate dueDate;
 
-  @Size(max = 1000)
+  @Size(max = 20_000)
   private String remarks;
 
   @Type(type = "jsonb")
