@@ -1,7 +1,6 @@
 package ca.gc.aafc.transaction.api.openapi;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
 
@@ -17,7 +16,6 @@ import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.TransactionTestingHelper;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
-import ca.gc.aafc.dina.testsupport.specs.ValidationRestrictionOptions;
 import ca.gc.aafc.transaction.api.TransactionModuleApiLauncher;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
 import ca.gc.aafc.transaction.api.entities.Transaction;
@@ -61,7 +59,6 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
             ),
             Map.of(
               "materialSamples", JsonAPITestHelper.generateExternalRelationList("material-sample", 1),
-              "involvedAgents", JsonAPITestHelper.generateExternalRelationList("person", 1),
               "attachment", JsonAPITestHelper.generateExternalRelationList("metadata", 1)
             ),
             null
@@ -70,8 +67,7 @@ public class TransactionOpenApiIT extends BaseRestAssuredTest {
 
     // Validate the response against the specs.
     response.body("data.id", Matchers.notNullValue());
-    OpenAPI3Assertions.assertRemoteSchema(OpenAPIConstants.TRANSACTION_API_SPECS_URL, SCHEMA_NAME, response.extract().asString(),
-      ValidationRestrictionOptions.builder().allowableMissingFields(Set.of("involvedAgents")).build());
+    OpenAPI3Assertions.assertRemoteSchema(OpenAPIConstants.TRANSACTION_API_SPECS_URL, SCHEMA_NAME, response.extract().asString());
 
     // Cleanup:
     UUID uuid = response.extract().jsonPath().getUUID("data.id");
