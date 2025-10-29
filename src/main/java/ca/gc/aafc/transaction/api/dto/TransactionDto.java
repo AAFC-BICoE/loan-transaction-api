@@ -13,18 +13,18 @@ import org.javers.core.metamodel.annotation.PropertyName;
 import org.javers.core.metamodel.annotation.TypeName;
 
 import ca.gc.aafc.dina.dto.ExternalRelationDto;
+import ca.gc.aafc.dina.dto.JsonApiResource;
 import ca.gc.aafc.dina.dto.RelatedEntity;
-import ca.gc.aafc.dina.repository.meta.AttributeMetaInfoProvider;
 import ca.gc.aafc.dina.repository.meta.JsonApiExternalRelation;
+import ca.gc.aafc.transaction.api.dto.external.PersonExternalDto;
 import ca.gc.aafc.transaction.api.entities.AgentRoles;
 import ca.gc.aafc.transaction.api.entities.Shipment;
 import ca.gc.aafc.transaction.api.entities.Transaction;
 
-import io.crnk.core.resource.annotations.JsonApiField;
-import io.crnk.core.resource.annotations.JsonApiId;
-import io.crnk.core.resource.annotations.JsonApiRelation;
-import io.crnk.core.resource.annotations.JsonApiResource;
-import io.crnk.core.resource.annotations.PatchStrategy;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.toedter.spring.hateoas.jsonapi.JsonApiId;
+import com.toedter.spring.hateoas.jsonapi.JsonApiTypeForClass;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,12 +36,11 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor @RelatedEntity(Transaction.class)
-@JsonApiResource(type = TransactionDto.TYPENAME)
+@JsonApiTypeForClass(TransactionDto.TYPENAME)
 @TypeName(TransactionDto.TYPENAME)
-public class TransactionDto extends AttributeMetaInfoProvider {
+public class TransactionDto implements JsonApiResource {
 
   public static final String TYPENAME = "transaction";
-  public static final String EXTERNAL_AGENT = "person";
 
   @JsonApiId
   @Id
@@ -69,36 +68,45 @@ public class TransactionDto extends AttributeMetaInfoProvider {
   @Builder.Default
   private List<AgentRoles> agentRoles = List.of();
 
-  // Field is mapped using the roles field. See getAgents().
-  // This field is mapped to the entity, but NOT stored in the database.
-  @JsonApiRelation
-  @JsonApiExternalRelation(type = EXTERNAL_AGENT)
-  private List<ExternalRelationDto> involvedAgents = List.of();
+  // Calculated field see getInvolvedAgents
+  private List<ExternalRelationDto> involvedAgents;
 
-  @JsonApiRelation
+  @JsonIgnore
   @JsonApiExternalRelation(type = "material-sample")
   private List<ExternalRelationDto> materialSamples = List.of();
 
-  @JsonApiField(patchStrategy = PatchStrategy.SET)
   @Builder.Default
   private Map<String, String> managedAttributes = Map.of();
 
+  @JsonIgnore
   @JsonApiExternalRelation(type = "metadata")
-  @JsonApiRelation
   @Builder.Default
   private List<ExternalRelationDto> attachment = List.of();
 
   private String createdBy;
   private OffsetDateTime createdOn;
 
-  public void setInvolvedAgents(List<ExternalRelationDto> fromEntity) {
+  public List<ExternalRelationDto> getInvolvedAgents() {
     if (CollectionUtils.isNotEmpty(agentRoles)) {
-      involvedAgents = agentRoles.stream()
-          .map(agent -> ExternalRelationDto.builder()
-              .id(agent.getAgent().toString())
-              .type(EXTERNAL_AGENT)
-              .build()
-          ).collect(Collectors.toList());      
+      return agentRoles.stream()
+        .map(agent -> ExternalRelationDto.builder()
+          .id(agent.getAgent().toString())
+          .type(PersonExternalDto.EXTERNAL_TYPENAME)
+          .build()
+        ).collect(Collectors.toList());
     }
+    return List.of();
+  }
+
+  @Override
+  @JsonIgnore
+  public String getJsonApiType() {
+    return TYPENAME;
+  }
+
+  @Override
+  @JsonIgnore
+  public UUID getJsonApiId() {
+    return uuid;
   }
 }
