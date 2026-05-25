@@ -24,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletException;
 import lombok.SneakyThrows;
 
 @SpringBootTest(classes = {TransactionModuleApiLauncher.class, BaseIntegrationTest.TestConfig.class},
@@ -118,7 +119,7 @@ public class TransactionManagedAttributeRepositoryIT extends TransactionModuleBa
       .build();
 
     JsonApiDocument docToCreate = dtoToJsonApiDocument(ma);
-    var exception = assertThrows(org.springframework.web.util.NestedServletException.class, () -> sendPost(docToCreate));
+    var exception = assertThrows(ServletException.class, () -> sendPost(docToCreate));
     assertEquals(AccessDeniedException.class, exception.getCause().getClass());
   }
 }

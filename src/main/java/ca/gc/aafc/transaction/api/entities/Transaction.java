@@ -1,23 +1,25 @@
 package ca.gc.aafc.transaction.api.entities;
 
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -62,14 +64,13 @@ public class Transaction implements DinaEntity {
   private String group;
 
   @NotNull
-  @Type(type = "pgsql_enum")
+  @Type(PostgreSQLEnumType.class)
   @Enumerated(EnumType.STRING)
   private Direction materialDirection;
 
   @Size(max = 50)
   private String transactionNumber;
 
-  @Type(type = "list-array")
   private List<String> otherIdentifiers;
 
   @Generated(value = GenerationTime.INSERT)
@@ -77,6 +78,7 @@ public class Transaction implements DinaEntity {
 
   @Size(max = 50)
   private String transactionType;
+
   @Size(max = 50)
   private String status;
 
@@ -93,24 +95,26 @@ public class Transaction implements DinaEntity {
   @Size(max = 20_000)
   private String remarks;
 
-  @Type(type = "jsonb")
+  @Type(JsonType.class)
+  @Column(columnDefinition = "jsonb")
   @Valid
   private Shipment shipment;
 
-  @Type(type = "jsonb")
+  @Type(JsonType.class)
+  @Column(columnDefinition = "jsonb")
   @Valid
   @Builder.Default
   private List<AgentRoles> agentRoles = List.of();
 
-  @Type(type = "list-array")
+  @Column(columnDefinition = "uuid[]")
   private List<UUID> materialSamples = List.of();
 
-  @Type(type = "jsonb")
+  @Type(JsonType.class)
+  @Column(columnDefinition = "jsonb")
   @NotNull
   @Builder.Default
   private Map<String, String> managedAttributes = new HashMap<>();
 
-  @Type(type = "list-array")
   @Column(name = "attachment", columnDefinition = "uuid[]")
   @Builder.Default
   private List<UUID> attachment = List.of();

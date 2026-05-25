@@ -1,7 +1,7 @@
 package ca.gc.aafc.transaction.api;
 
 import java.util.Properties;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import ca.gc.aafc.transaction.api.service.TransactionService;
 import org.springframework.boot.info.BuildProperties;

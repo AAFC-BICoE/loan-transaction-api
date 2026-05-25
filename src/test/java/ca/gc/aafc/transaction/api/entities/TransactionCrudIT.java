@@ -3,7 +3,7 @@ package ca.gc.aafc.transaction.api.entities;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
 
