@@ -3,7 +3,7 @@
 
   <groupId>ca.gc.aafc</groupId>
   <artifactId>loan-transaction-api</artifactId>
-  <version>0.14</version>
+  <version>0.15</version>
   <packaging>jar</packaging>
 
   <name>loan-transaction API</name>
@@ -12,13 +12,13 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.18</version>
+    <version>3.0.13</version>
   </parent>
 
   <properties>
     <java.version>21</java.version>
-    <javax.interceptor-api>1.2.2</javax.interceptor-api>
 
+    <javax.interceptor-api>1.2.2</javax.interceptor-api>
     <jcip-annotations.version>1.0</jcip-annotations.version>
     <dependency.check.version>12.1.6</dependency.check.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
@@ -32,16 +32,13 @@
     <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
     <checkstyle.version>10.17.0</checkstyle.version>
 
-    <dina-base-api.version>0.155</dina-base-api.version>
-    <spring-boot-maven-plugin.fork>false</spring-boot-maven-plugin.fork>
+    <dina-base-api.version>0.169</dina-base-api.version>
 
-    <spring-framework.version>5.3.38</spring-framework.version>
-
-    <!-- Versions override-->
-    <snakeyaml.version>1.33</snakeyaml.version>
-    <postgresql.version>42.4.4</postgresql.version>
+    <!-- versions override-->
+    <spring-framework.version>6.0.18</spring-framework.version>
+    <tomcat.version>10.1.55</tomcat.version>
     <jackson-bom.version>2.15.4</jackson-bom.version>
-    <tomcat.version>9.0.106</tomcat.version>
+    <postgresql.version>42.4.4</postgresql.version>
   </properties>
 
   <dependencies>
@@ -142,7 +139,6 @@
         </executions>
         <configuration>
           <includeSystemScope>true</includeSystemScope>
-          <fork>${spring-boot-maven-plugin.fork}</fork>
         </configuration>
       </plugin>
       <plugin>
