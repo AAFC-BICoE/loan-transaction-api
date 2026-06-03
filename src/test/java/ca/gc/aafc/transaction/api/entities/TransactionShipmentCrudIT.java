@@ -6,8 +6,8 @@ import ca.gc.aafc.transaction.api.testsupport.factories.ShipmentFactory;
 import ca.gc.aafc.transaction.api.testsupport.factories.TransactionFactory;
 import org.junit.jupiter.api.Test;
 
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

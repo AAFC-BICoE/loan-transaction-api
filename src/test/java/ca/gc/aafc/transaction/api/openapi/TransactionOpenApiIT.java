@@ -2,11 +2,12 @@ package ca.gc.aafc.transaction.api.openapi;
 
 import java.util.Map;
 import java.util.UUID;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -16,6 +17,7 @@ import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.TransactionTestingHelper;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
+import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.transaction.api.TransactionModuleApiLauncher;
 import ca.gc.aafc.transaction.api.dto.TransactionDto;
 import ca.gc.aafc.transaction.api.entities.Transaction;
@@ -30,9 +32,10 @@ import io.restassured.response.ValidatableResponse;
   classes = TransactionModuleApiLauncher.class
 )
 @ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
+@Import(BaseIntegrationTest.TestConfig.class)
 public class TransactionOpenApiIT extends BaseRestAssuredTest {
 
-  public static final String API_BASE_PATH = "/api/v1/transaction/";
+  public static final String API_BASE_PATH = "/api/v1/transaction";
   private static final String SCHEMA_NAME = "Transaction";
 
   @Inject

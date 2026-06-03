@@ -3,11 +3,12 @@ package ca.gc.aafc.transaction.api.openapi;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.UUID;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -17,6 +18,7 @@ import ca.gc.aafc.dina.testsupport.PostgresTestContainerInitializer;
 import ca.gc.aafc.dina.testsupport.TransactionTestingHelper;
 import ca.gc.aafc.dina.testsupport.jsonapi.JsonAPITestHelper;
 import ca.gc.aafc.dina.testsupport.specs.OpenAPI3Assertions;
+import ca.gc.aafc.transaction.api.BaseIntegrationTest;
 import ca.gc.aafc.transaction.api.TransactionModuleApiLauncher;
 import ca.gc.aafc.transaction.api.dto.TransactionManagedAttributeDto;
 import ca.gc.aafc.transaction.api.entities.TransactionManagedAttribute;
@@ -31,9 +33,10 @@ import lombok.SneakyThrows;
 )
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 @ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
+@Import(BaseIntegrationTest.TestConfig.class)
 public class TransactionManagedAttributeOpenApiIT extends BaseRestAssuredTest {
 
-  public static final String API_BASE_PATH = "/api/v1/managed-attribute/";
+  public static final String API_BASE_PATH = "/api/v1/managed-attribute";
   private static final String SCHEMA_NAME = "ManagedAttribute";
 
   @Inject

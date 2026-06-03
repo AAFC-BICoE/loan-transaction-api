@@ -2,8 +2,8 @@ package ca.gc.aafc.transaction.api.service;
 
 import java.util.List;
 import java.util.UUID;
-import javax.transaction.Transactional;
-import javax.validation.ValidationException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 
 import org.junit.jupiter.api.Test;
 

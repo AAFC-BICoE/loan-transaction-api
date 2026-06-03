@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.inject.Inject;
-import javax.validation.ValidationException;
+import jakarta.inject.Inject;
+import jakarta.validation.ValidationException;
 
 @SpringBootTest(properties = "keycloak.enabled: true")
 public class TransactionResourceRepositoryIT extends BaseIntegrationTest {

@@ -4,7 +4,9 @@ import ca.gc.aafc.dina.entity.ManagedAttribute;
 import ca.gc.aafc.dina.i18n.MultilingualDescription;
 import ca.gc.aafc.dina.i18n.MultilingualTitle;
 
-import javax.persistence.Transient;
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,16 +18,16 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -53,12 +55,11 @@ public class TransactionManagedAttribute implements ManagedAttribute {
   private String group;
 
   @NotNull
-  @Type(type = "pgsql_enum")
+  @Type(PostgreSQLEnumType.class)
   @Enumerated(EnumType.STRING)
   @Column(name = "type")
   private VocabularyElementType vocabularyElementType;
 
-  @Type(type = "string-array")
   @Column(columnDefinition = "text[]")
   private String[] acceptedValues;
 
@@ -70,8 +71,8 @@ public class TransactionManagedAttribute implements ManagedAttribute {
   @Column(name = "created_by", updatable = false)
   private String createdBy;
 
-  @Type(type = "jsonb")
-  @Column(name = "multilingual_description")
+  @Type(JsonType.class)
+  @Column(name = "multilingual_description", columnDefinition = "jsonb")
   private MultilingualDescription multilingualDescription;
   
   @NotNull
