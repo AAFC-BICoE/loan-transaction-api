@@ -3,7 +3,7 @@
 
   <groupId>ca.gc.aafc</groupId>
   <artifactId>loan-transaction-api</artifactId>
-  <version>0.15</version>
+  <version>0.16</version>
   <packaging>jar</packaging>
 
   <name>loan-transaction API</name>
@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.0.13</version>
+    <version>3.1.12</version>
   </parent>
 
   <properties>
@@ -32,12 +32,10 @@
     <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
     <checkstyle.version>10.17.0</checkstyle.version>
 
-    <dina-base-api.version>0.169</dina-base-api.version>
+    <dina-base-api.version>0.170</dina-base-api.version>
 
     <!-- versions override-->
-    <spring-framework.version>6.0.18</spring-framework.version>
     <tomcat.version>10.1.55</tomcat.version>
-    <jackson-bom.version>2.15.4</jackson-bom.version>
     <postgresql.version>42.4.4</postgresql.version>
   </properties>
 
@@ -144,6 +142,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
