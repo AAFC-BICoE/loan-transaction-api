@@ -1,5 +1,6 @@
 package ca.gc.aafc.transaction.api.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AgentRoles {
+public class AgentRoles implements Serializable {
 
   @NotNull
   private UUID agent;

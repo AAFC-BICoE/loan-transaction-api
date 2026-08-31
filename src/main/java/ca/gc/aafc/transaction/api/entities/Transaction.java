@@ -1,6 +1,5 @@
 package ca.gc.aafc.transaction.api.entities;
 
-import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -22,10 +21,12 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
+import org.hibernate.generator.EventType;
+import org.hibernate.type.SqlTypes;
 
 import ca.gc.aafc.dina.entity.DinaEntity;
 import ca.gc.aafc.dina.service.OnUpdate;
@@ -64,7 +65,7 @@ public class Transaction implements DinaEntity {
   private String group;
 
   @NotNull
-  @Type(PostgreSQLEnumType.class)
+  @JdbcTypeCode(SqlTypes.NAMED_ENUM)
   @Enumerated(EnumType.STRING)
   private Direction materialDirection;
 
@@ -73,7 +74,7 @@ public class Transaction implements DinaEntity {
 
   private List<String> otherIdentifiers;
 
-  @Generated(value = GenerationTime.INSERT)
+  @Generated(event = EventType.INSERT)
   private Boolean materialToBeReturned;
 
   @Size(max = 50)
@@ -123,7 +124,7 @@ public class Transaction implements DinaEntity {
   private String createdBy;
 
   @Column(name = "created_on", insertable = false, updatable = false)
-  @Generated(value = GenerationTime.INSERT)
+  @Generated(event = EventType.INSERT)
   private OffsetDateTime createdOn;
 
 }
