@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -111,7 +111,7 @@ public class TransactionManagedAttributeRepositoryIT extends TransactionModuleBa
 
   @Test
   @WithMockKeycloakUser(groupRole = VALID_GROUP + ":SUPER_USER", username = USER_NAME)
-  public void update_WithIncorrectGroup_AccessDeniedException() throws Exception {
+  public void update_WithIncorrectGroup_AuthorizationDeniedException() throws Exception {
     TransactionManagedAttributeDto ma = TransactionManagedAttributeFixture.newTransactionManagedAttribute()
       .group(INVALID_GROUP)
       .vocabularyElementType(TypedVocabularyElement.VocabularyElementType.STRING)
@@ -120,6 +120,6 @@ public class TransactionManagedAttributeRepositoryIT extends TransactionModuleBa
 
     JsonApiDocument docToCreate = dtoToJsonApiDocument(ma);
     var exception = assertThrows(ServletException.class, () -> sendPost(docToCreate));
-    assertEquals(AccessDeniedException.class, exception.getCause().getClass());
+    assertEquals(AuthorizationDeniedException.class, exception.getCause().getClass());
   }
 }
