@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.gc.aafc.dina.exception.ConflictException;
 import ca.gc.aafc.dina.exception.ResourceGoneException;
 import ca.gc.aafc.dina.exception.ResourceNotFoundException;
 import ca.gc.aafc.dina.jsonapi.JsonApiDocument;
@@ -125,7 +126,7 @@ public class TransactionResourceRepositoryIT extends BaseIntegrationTest {
 
   @Test
   @WithMockKeycloakUser(username = "user", groupRole = TransactionFixture.GROUP + ":SUPER_USER")
-  public void save_onUpdateData_FieldsUpdated() throws ResourceNotFoundException, ResourceGoneException {
+  public void save_onUpdateData_FieldsUpdated() throws ResourceNotFoundException, ResourceGoneException, ConflictException {
     final String updatedTransactionNumber = "Updated T2";
     TransactionDto transactionDto = TransactionFixture.newTransaction().build();
     JsonApiDocument transactionToCreate = JsonApiDocuments.createJsonApiDocument(

@@ -17,6 +17,6 @@ Configuration:
           AppenderRef:
             - ref: LogToConsole
       Root:
-          level: warning
+          level: WARN
           AppenderRef:
             - ref: LogToConsole
