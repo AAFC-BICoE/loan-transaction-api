@@ -7,12 +7,14 @@ import lombok.Data;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
 @Builder
-public class Shipment {
+public class Shipment implements Serializable {
 
   @Size(max = 1000)
   private String contentRemarks;
@@ -47,7 +49,7 @@ public class Shipment {
 
   @Data
   @Builder
-  public static class Address {
+  public static class Address implements Serializable {
     @Size (max = 150)
     private String receiverName;
 

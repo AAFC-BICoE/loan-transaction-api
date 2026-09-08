@@ -4,7 +4,6 @@ import ca.gc.aafc.dina.entity.ManagedAttribute;
 import ca.gc.aafc.dina.i18n.MultilingualDescription;
 import ca.gc.aafc.dina.i18n.MultilingualTitle;
 
-import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -13,10 +12,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
+import org.hibernate.generator.EventType;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,7 +56,7 @@ public class TransactionManagedAttribute implements ManagedAttribute {
   private String group;
 
   @NotNull
-  @Type(PostgreSQLEnumType.class)
+  @JdbcTypeCode(SqlTypes.NAMED_ENUM)
   @Enumerated(EnumType.STRING)
   @Column(name = "type")
   private VocabularyElementType vocabularyElementType;
@@ -64,7 +65,7 @@ public class TransactionManagedAttribute implements ManagedAttribute {
   private String[] acceptedValues;
 
   @Column(name = "created_on", insertable = false, updatable = false)
-  @Generated(value = GenerationTime.INSERT)
+  @Generated(event = EventType.INSERT)
   private OffsetDateTime createdOn;
 
   @NotBlank
