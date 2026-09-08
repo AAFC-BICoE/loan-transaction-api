@@ -44,7 +44,6 @@ jobs:
             target/loan-transaction-api-*.jar
             Dockerfile
 
-
   push:
     name: Build Docker Image and Push to DockerHub
     needs: [build]
@@ -79,4 +78,6 @@ jobs:
           push: true
           tags: aafcbicoe/loan-transaction-api:${{ env.VERSION_TAG }}
           provenance: false
+          # Force the builder engine to output standard Docker mediatypes for OKD
+          outputs: type=image,oci-mediatypes=false
 
