@@ -35,7 +35,7 @@
     <dina-base-api.version>0.179</dina-base-api.version>
 
     <!-- versions override-->
-    <tomcat.version>10.1.57</tomcat.version>
+    <tomcat.version>10.1.58</tomcat.version>
     <postgresql.version>42.4.4</postgresql.version>
   </properties>
 
